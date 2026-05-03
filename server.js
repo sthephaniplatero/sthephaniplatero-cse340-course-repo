@@ -3,56 +3,64 @@ import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
 
-console.log("Estoy vivo 👀");
-
-
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Fix __dirname en ES Modules
+/* ======================
+   FIX __dirname (ESM)
+====================== */
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-
-// 🔥 SERVIR TODO public (más simple y robusto)
+/* ======================
+   STATIC FILES
+====================== */
 app.use(express.static(path.join(__dirname, "public")));
 
-// Configurar EJS
+/* ======================
+   EJS CONFIG
+====================== */
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
-// ======================
-// ROUTES
-// ======================
+/* ======================
+   ROUTES
+====================== */
 
-// Home
+// HOME
 app.get("/", (req, res) => {
   res.render("pages/index", { title: "Home" });
 });
 
-// Organizations
+// ORGANIZATIONS
 app.get("/organizations", (req, res) => {
   res.render("pages/organizations", { title: "Organizations" });
 });
 
-// Projects
+// PROJECTS
 app.get("/projects", (req, res) => {
   res.render("pages/projects", { title: "Projects" });
 });
 
-// Categories
+// CATEGORIES
 app.get("/categories", (req, res) => {
   res.render("pages/categories", { title: "Categories" });
 });
 
-// 🔥 404 handler (MUY útil)
+/* ======================
+   404 HANDLER
+====================== */
 app.use((req, res) => {
-  res.status(404).send("404 - Página no encontrada");
+  res.status(404).render("pages/404", {
+    title: "404 - Not Found",
+  });
 });
 
-// Iniciar servidor
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on http://localhost:${PORT}`);
+/* ======================
+   START SERVER (Render safe)
+====================== */
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server running on port ${PORT}`);
 });
