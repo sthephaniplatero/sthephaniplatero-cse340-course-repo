@@ -1,0 +1,73 @@
+<%- include("../partials/header") %>
+<%- include("../partials/nav") %>
+
+<main>
+
+  <!-- HEADER -->
+  <section class="page-header">
+    <h1>Projects</h1>
+    <p>Explore impactful initiatives developed by organizations across different categories.</p>
+  </section>
+
+  <!-- FILTER BAR -->
+  <section class="filter-bar">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Environmental</button>
+    <button class="filter-btn">Education</button>
+    <button class="filter-btn">Community</button>
+    <button class="filter-btn">Health</button>
+  </section>
+
+  <!-- PROJECTS GRID -->
+  <section class="projects-grid">
+
+    <!-- PROJECT 1 -->
+    <div class="project-card">
+      <img src="/images/org1.jpg" alt="Project">
+      <div class="project-content">
+        <span class="project-category">Environmental</span>
+        <h3>Urban Reforestation Program</h3>
+        <p>Planting trees in urban areas to improve air quality and biodiversity.</p>
+
+        <div class="project-footer">
+          <span>Green Future Initiative</span>
+          <button>View</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 2 -->
+    <div class="project-card">
+      <img src="/images/org2.jpg" alt="Project">
+      <div class="project-content">
+        <span class="project-category">Education</span>
+        <h3>Digital Literacy for Youth</h3>
+        <p>Teaching essential tech skills to underserved communities.</p>
+
+        <div class="project-footer">
+          <span>Bright Minds Foundation</span>
+          <button>View</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT 3 -->
+    <div class="project-card">
+      <img src="/images/org3.jpg" alt="Project">
+      <div class="project-content">
+        <span class="project-category">Health</span>
+        <h3>Community Wellness Campaign</h3>
+        <p>Promoting healthy habits and preventive care programs.</p>
+
+        <div class="project-footer">
+          <span>Health First Network</span>
+          <button>View</button>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<%- include("../partials/footer") %>
