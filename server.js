@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, "public")));
    EJS CONFIG
 ====================== */
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "my_app", "views"));
 
 /* ======================
    ROUTES
