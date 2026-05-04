@@ -17,7 +17,7 @@ const __dirname = path.dirname(__filename);
 /* ======================
    STATIC FILES
 ====================== */
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "my_app", "public")));
 
 /* ======================
    EJS CONFIG
