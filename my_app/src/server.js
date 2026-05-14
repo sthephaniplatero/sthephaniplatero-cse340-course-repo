@@ -1,13 +1,15 @@
-import express from "express";
 import dotenv from "dotenv";
-import path from "path";
-import { fileURLToPath } from "url";
-import pool from "./src/database/connection.js";
-import { testConnection } from "./src/models/db.js";
-
 dotenv.config();
 
+import express from "express";
+import path from "path";
+import { fileURLToPath } from "url";
+
+import { getAllOrganizations } from "./models/organizations.js";
+import db, { testConnection } from "./models/db.js";
+
 const app = express();
+
 const PORT = process.env.PORT || 3000;
 const NODE_ENV = process.env.NODE_ENV || "development";
 
@@ -20,13 +22,13 @@ const __dirname = path.dirname(__filename);
 /* ======================
    STATIC FILES
 ====================== */
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "../public")));
 
 /* ======================
    EJS CONFIG
 ====================== */
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
+app.set("views", path.join(__dirname, "../views"));
 
 /* ======================
    ROUTES
@@ -34,22 +36,45 @@ app.set("views", path.join(__dirname, "views"));
 
 // HOME
 app.get("/", (req, res) => {
-  res.render("pages/index", { title: "Home" });
+  res.render("pages/index", {
+    title: "Home"
+  });
 });
 
 // ORGANIZATIONS
-app.get("/organizations", (req, res) => {
-  res.render("pages/organizations", { title: "Organizations" });
+app.get("/organizations", async (req, res) => {
+  try {
+
+    const organizations = await getAllOrganizations();
+
+    res.render("pages/organizations", {
+      title: "Our Partner Organizations",
+      organizations
+    });
+
+  } catch (error) {
+
+    console.error("FULL ERROR:", error);
+
+    res.status(500).json({
+      message: error.message,
+      stack: error.stack
+    });
+  }
 });
 
 // PROJECTS
 app.get("/projects", (req, res) => {
-  res.render("pages/projects", { title: "Projects" });
+  res.render("pages/projects", {
+    title: "Projects"
+  });
 });
 
 // CATEGORIES
 app.get("/categories", (req, res) => {
-  res.render("pages/categories", { title: "Categories" });
+  res.render("pages/categories", {
+    title: "Categories"
+  });
 });
 
 /* ======================
@@ -58,7 +83,7 @@ app.get("/categories", (req, res) => {
 app.get("/db-test", async (req, res) => {
   try {
 
-    const result = await pool.query("SELECT NOW()");
+    const result = await db.query("SELECT NOW()");
 
     res.send({
       success: true,
@@ -73,7 +98,6 @@ app.get("/db-test", async (req, res) => {
       success: false,
       error: error.message,
     });
-
   }
 });
 
@@ -94,12 +118,11 @@ app.listen(PORT, async () => {
 
     await testConnection();
 
-    console.log(`🚀 Server is running at http://127.0.0.1:${PORT}`);
-    console.log(`🌎 Environment: ${NODE_ENV}`);
+    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+    console.log(`Environment: ${NODE_ENV}`);
 
   } catch (error) {
 
-    console.error("❌ Error connecting to the database:", error);
-
+    console.error("Error connecting to the database:", error);
   }
 });
