@@ -5,8 +5,8 @@ import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 
-import { getAllOrganizations } from "./models/organizations.js";
-import db, { testConnection } from "./models/db.js";
+import { getAllOrganizations } from "./src/models/organizations.js";
+import db, { testConnection } from "./src/models/db.js";
 
 const app = express();
 
@@ -70,21 +70,13 @@ app.use((req, res) => {
   res.status(404).render("pages/404", { title: "404 - Not Found" });
 });
 
-/* START SERVER SAFE */
-async function startServer() {
+app.listen(PORT, async () => {
   try {
     await testConnection();
-    console.log("Database connected");
-
-    app.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-      console.log(`Environment: ${NODE_ENV}`);
-    });
-
+    console.log(`Server is running at http://127.0.0.1:${PORT}`);
+    console.log(`Environment: ${NODE_ENV}`);
   } catch (error) {
-    console.error("Database connection failed:", error);
-    process.exit(1);
+    console.error('Error connecting to the database:', error);
   }
-}
+});
 
-startServer();
