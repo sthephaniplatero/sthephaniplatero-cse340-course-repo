@@ -1,24 +1,24 @@
-import { Pool } from 'pg';
+import pkg from 'pg';
+const { Pool } = pkg;
+import 'dotenv/config'; // <-- CRUCIAL: Cargar las variables aquí mismo
 
 /**
- * Connection pool for PostgreSQL database.
+ * Configuración del Pool de PostgreSQL
  */
 const pool = new Pool({
-    host: process.env.DB_HOST,
-    port: Number(process.env.DB_PORT),
-    database: process.env.DB_NAME,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
+    connectionString: process.env.DATABASE_URL,
+    // Modificamos esto para que Render lo acepte
     ssl: {
         rejectUnauthorized: false
     }
 });
 
 /**
- * Database wrapper (for optional logging in development)
+ * Database wrapper (SQL logging en desarrollo)
  */
 let db = null;
 
+// Asegúrate de que NODE_ENV esté definido como 'development' en tu .env
 if (
     process.env.NODE_ENV === 'development' &&
     process.env.ENABLE_SQL_LOGGING === 'true'
@@ -45,7 +45,6 @@ if (
                 throw error;
             }
         },
-
         async close() {
             await pool.end();
         }
@@ -59,15 +58,25 @@ if (
  */
 const testConnection = async () => {
     try {
+        // Si DATABASE_URL es undefined, lanzamos un error claro antes de intentar la consulta
+        if (!process.env.DATABASE_URL) {
+            throw new Error("La variable DATABASE_URL no está definida. Revisa tu archivo .env");
+        }
+
         const result = await db.query('SELECT NOW() as current_time');
-        console.log('Database connection successful:', result.rows[0].current_time);
+        console.log(
+            '✅ Database connection successful:',
+            result.rows[0].current_time
+        );
         return true;
     } catch (error) {
-        console.error('Database connection failed:', error.message);
-        throw error;
+        console.error('❌ Database connection failed:', error.message);
+        // No lanzamos el throw aquí para que el servidor no se caiga de golpe, 
+        // pero puedes dejarlo si prefieres que se detenga.
     }
 };
 
-console.log("DB_URL:", process.env.DB_URL);
+// Esto te ayudará a ver si realmente se cargó la variable
+console.log('DATABASE_URL detectada:', process.env.DATABASE_URL ? "SÍ" : "NO (Sigue siendo undefined)");
 
 export { db as default, testConnection };

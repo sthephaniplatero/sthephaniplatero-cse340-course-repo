@@ -1,10 +1,11 @@
 import dotenv from "dotenv";
-dotenv.config();
+dotenv.config(); // Esto debe ir siempre en la primera línea
 
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
 
+// Importar modelos y conexión
 import { getAllOrganizations } from "./src/models/organizations.js";
 import db, { testConnection } from "./src/models/db.js";
 
@@ -17,14 +18,17 @@ const NODE_ENV = process.env.NODE_ENV || "development";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-/* STATIC */
-app.use(express.static(path.join(__dirname, "../public")));
+/* CONFIGURACIÓN DE RUTAS ESTÁTICAS Y VISTAS
+   He quitado el "../" porque tu archivo server.js está en la raíz.
+   Ahora buscará dentro de tu proyecto.
+*/
+app.use(express.static(path.join(__dirname, "public")));
 
-/* EJS */
+/* CONFIGURACIÓN DE EJS */
 app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "../views"));
+app.set("views", path.join(__dirname, "views"));
 
-/* ROUTES */
+/* RUTAS */
 
 app.get("/", (req, res) => {
   res.render("pages/index", { title: "Home" });
@@ -33,18 +37,15 @@ app.get("/", (req, res) => {
 app.get("/organizations", async (req, res) => {
   try {
     const organizations = await getAllOrganizations();
-
     res.render("pages/organizations", {
       title: "Our Partner Organizations",
       organizations
     });
-
   } catch (error) {
-    console.error(error);
-
-    res.status(500).json({
-      message: error.message,
-      stack: error.stack
+    console.error("Error al obtener organizaciones:", error);
+    res.status(500).render("pages/404", { 
+      title: "Error 500", 
+      message: "Error al cargar organizaciones" 
     });
   }
 });
@@ -66,17 +67,19 @@ app.get("/db-test", async (req, res) => {
   }
 });
 
+/* MANEJO DE 404 */
 app.use((req, res) => {
   res.status(404).render("pages/404", { title: "404 - Not Found" });
 });
 
+/* INICIO DEL SERVIDOR */
 app.listen(PORT, async () => {
   try {
+    // Intentar conectar a la base de datos de Render al iniciar
     await testConnection();
-    console.log(`Server is running at http://127.0.0.1:${PORT}`);
-    console.log(`Environment: ${NODE_ENV}`);
+    console.log(`✅ Servidor corriendo en: http://127.0.0.1:${PORT}`);
+    console.log(`🚀 Entorno: ${NODE_ENV}`);
   } catch (error) {
-    console.error('Error connecting to the database:', error);
+    console.error('❌ No se pudo conectar a la base de datos al iniciar:', error.message);
   }
 });
-
