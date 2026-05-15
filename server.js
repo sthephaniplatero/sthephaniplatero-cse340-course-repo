@@ -8,6 +8,8 @@ import { fileURLToPath } from "url";
 // Importar modelos y conexión
 import { getAllOrganizations } from "./src/models/organizations.js";
 import db, { testConnection } from "./src/models/db.js";
+import { getAllProjects } from "./src/models/projects.js";
+import { getAllCategories } from "./src/models/categories.js";
 
 const app = express();
 
@@ -50,12 +52,27 @@ app.get("/organizations", async (req, res) => {
   }
 });
 
-app.get("/projects", (req, res) => {
-  res.render("pages/projects", { title: "Projects" });
+app.get("/projects", async (req, res) => {
+  try {
+    const projects = await getAllProjects();
+    res.render("pages/projects", { 
+      title: "Service Projects", 
+      projects 
+    });
+  } catch (error) {
+    console.error("Error al cargar proyectos:", error.message);
+    res.status(500).send("Error interno del servidor");
+  }
 });
 
-app.get("/categories", (req, res) => {
-  res.render("pages/categories", { title: "Categories" });
+app.get("/categories", async (req, res) => {
+  try {
+    const categories = await getAllCategories();
+    res.render("pages/categories", { title: "Categories", categories });
+  } catch (error) {
+    console.error("Error al cargar categorías:", error.message);
+    res.status(500).send("Error interno del servidor");
+  }
 });
 
 app.get("/db-test", async (req, res) => {

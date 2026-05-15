@@ -3,13 +3,11 @@
 
 <main>
 
-  <!-- HEADER -->
   <section class="page-header">
-    <h1>Projects</h1>
+    <h1><%= title %></h1>
     <p>Explore impactful initiatives developed by organizations across different categories.</p>
   </section>
 
-  <!-- FILTER BAR -->
   <section class="filter-bar">
     <button class="filter-btn active">All</button>
     <button class="filter-btn">Environmental</button>
@@ -18,53 +16,37 @@
     <button class="filter-btn">Health</button>
   </section>
 
-  <!-- PROJECTS GRID -->
   <section class="projects-grid">
 
-    <!-- PROJECT 1 -->
-    <div class="project-card">
-      <img src="/images/org1.jpg" alt="Project">
-      <div class="project-content">
-        <span class="project-category">Environmental</span>
-        <h3>Urban Reforestation Program</h3>
-        <p>Planting trees in urban areas to improve air quality and biodiversity.</p>
-
-        <div class="project-footer">
-          <span>Green Future Initiative</span>
-          
-        </div>
-      </div>
-    </div>
-
-    <!-- PROJECT 2 -->
-    <div class="project-card">
-      <img src="/images/org2.jpg" alt="Project">
-      <div class="project-content">
-        <span class="project-category">Education</span>
-        <h3>Digital Literacy for Youth</h3>
-        <p>Teaching essential tech skills to underserved communities.</p>
-
-        <div class="project-footer">
-          <span>Bright Minds Foundation</span>
-         
-        </div>
-      </div>
-    </div>
-
-    <!-- PROJECT 3 -->
-    <div class="project-card">
-      <img src="/images/org3.jpg" alt="Project">
-      <div class="project-content">
-        <span class="project-category">Health</span>
-        <h3>Community Wellness Campaign</h3>
-        <p>Promoting healthy habits and preventive care programs.</p>
-
-        <div class="project-footer">
-          <span>Health First Network</span>
+    <% if (projects && projects.length > 0) { %>
+      <% projects.forEach(project => { %>
         
+        <div class="project-card">
+          <img src="/images/project-default.jpg" alt="<%= project.title %>">
+          
+          <div class="project-content">
+            <span class="project-date-tag">
+              <strong><%= new Date(project.project_date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }) %></strong>
+            </span>
+            
+            <h3><%= project.title %></h3>
+            
+            <p><%= project.description %></p>
+
+            <div class="project-footer">
+              <span>Sponsor: <strong><%= project.organization_name %></strong></span>
+              <br>
+              <small>📍 <%= project.location %></small>
+            </div>
+          </div>
         </div>
+
+      <% }); %>
+    <% } else { %>
+      <div class="no-data">
+        <p>No service projects found. Please check back later.</p>
       </div>
-    </div>
+    <% } %>
 
   </section>
 

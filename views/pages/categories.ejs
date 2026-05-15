@@ -3,38 +3,32 @@
 
 <main>
 
-  <!-- HEADER -->
   <section class="page-header">
-    <h1>Categories</h1>
+    <h1><%= title %></h1>
     <p>Explore organizations by category and discover opportunities that match your interests.</p>
   </section>
 
-  <!-- GRID DE CATEGORÍAS -->
   <section class="categories-grid">
 
-    <div class="category-card">
-      <h3>🌱 Environmental</h3>
-      <p>Organizations focused on sustainability, conservation, and environmental protection.</p>
-      <span>24 Organizations</span>
-    </div>
+    <% if (categories && categories.length > 0) { %>
+      <% categories.forEach(category => { %>
+        
+        <div class="category-card">
+          <h3>📂 <%= category.category_name %></h3>
+          
+          <p>Explore all service projects and organizations under the <%= category.category_name %> sector.</p>
+          
+          <div class="category-footer">
+            <a href="/categories/view/<%= category.category_id %>" class="btn-link">View Projects</a>
+          </div>
+        </div>
 
-    <div class="category-card">
-      <h3>📚 Educational</h3>
-      <p>Programs that promote learning, literacy, and academic development.</p>
-      <span>18 Organizations</span>
-    </div>
-
-    <div class="category-card">
-      <h3>🤝 Community Service</h3>
-      <p>Initiatives dedicated to helping communities and improving quality of life.</p>
-      <span>32 Organizations</span>
-    </div>
-
-    <div class="category-card">
-      <h3>💪 Health & Wellness</h3>
-      <p>Organizations promoting physical health, mental well-being, and active lifestyles.</p>
-      <span>15 Organizations</span>
-    </div>
+      <% }); %>
+    <% } else { %>
+      <div class="no-data">
+        <p>No categories found. Please run the setup script in your database.</p>
+      </div>
+    <% } %>
 
   </section>
 
