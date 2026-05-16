@@ -11,8 +11,6 @@
     <% if (organizations && organizations.length > 0) { %>
       <% organizations.forEach(org => { %>
         <div class="org-card">
-          <img src="/images/<%= org.logo_filename || 'placeholder.jpg' %>" alt="<%= org.name %>">
-          
           <div class="org-content">
             <h3><%= org.name %></h3>
             
