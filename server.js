@@ -51,7 +51,21 @@ app.get("/", (req, res) => {
   res.render("pages/index", { title: "Home" });
 });
 
-
+app.get("/organizations", async (req, res) => {
+  try {
+    const organizations = await getAllOrganizations();
+    res.render("pages/organizations", {
+      title: "Our Partner Organizations",
+      organizations
+    });
+  } catch (error) {
+    console.error("Error al obtener organizaciones:", error);
+    res.status(500).render("pages/404", { 
+      title: "Error 500", 
+      message: "Error al cargar organizaciones" 
+    });
+  }
+});
 
 app.get("/projects", async (req, res) => {
   try {
