@@ -1,21 +1,52 @@
 <%- include('partials/header') %>
-<main>
+
+<main class="organization-details">
+
     <h1><%= title %></h1>
 
-    <h2><%= organizationDetails.name %></h2>
-    <img src="/images/<%= organizationDetails.logo_filename %>" alt="<%= organizationDetails.name %> logo">
+    <section class="organization-card">
 
-    <p>Description: <%= organizationDetails.description %></p>
-
-    <h3>Service Projects</h3>
-    <ul>
-        <% if (projects.length > 0) { %>
-            <% projects.forEach(project => { %>
-                <li><a href="/project/<%= project.project_id %>"><%= project.title %></a></li>
-            <% }) %>
-        <% } else { %>
-            <li>No projects available for this organization yet.</li>
+        <% if (organizationDetails.logo_filename) { %>
+            <img 
+                src="/images/<%= organizationDetails.logo_filename %>" 
+                alt="<%= organizationDetails.name %> logo"
+                class="organization-logo"
+            >
         <% } %>
-    </ul>
+
+        <div class="organization-info">
+            <h2><%= organizationDetails.name %></h2>
+
+            <p>
+                <strong>Description:</strong>
+                <%= organizationDetails.description %>
+            </p>
+        </div>
+
+    </section>
+
+    <section class="projects-section">
+        <h3>Service Projects</h3>
+
+        <ul>
+            <% if (projects.length > 0) { %>
+
+                <% projects.forEach(project => { %>
+                    <li>
+                        <a href="/project/<%= project.project_id %>">
+                            <%= project.title %>
+                        </a>
+                    </li>
+                <% }) %>
+
+            <% } else { %>
+
+                <li>No projects available for this organization yet.</li>
+
+            <% } %>
+        </ul>
+    </section>
+
 </main>
+
 <%- include('partials/footer') %>

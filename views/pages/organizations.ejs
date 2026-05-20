@@ -1,35 +1,65 @@
 <%- include("../partials/header") %>
-<%- include("../partials/nav") %>
+
 
 <main>
+
   <section class="page-header">
     <h1><%= title %></h1>
     <p>Discover organizations making an impact across different sectors.</p>
   </section>
 
   <section class="org-container">
+
     <% if (organizations && organizations.length > 0) { %>
+
       <% organizations.forEach(org => { %>
+
         <div class="org-card">
+
+          <!-- LOGO -->
+          <% if (org.logo_filename) { %>
+            <img 
+              src="/images/<%= org.logo_filename %>" 
+              alt="<%= org.name %> logo"
+            >
+          <% } %>
+
+          <!-- CONTENT -->
           <div class="org-content">
+
             <h3><%= org.name %></h3>
-            
-            <p class="org-category">📧 <%= org.contact_email %></p>
+
+            <p class="org-category">
+              📧 <%= org.contact_email %>
+            </p>
 
             <p>
               <%= org.description %>
             </p>
 
             <div class="org-footer">
-              <a href="/organizations/details/<%= org.organization_id %>" class="btn-link">Learn More</a>
+              <a 
+                href="/organizations/details/<%= org.organization_id %>" 
+                class="org-btn"
+              >
+                Learn More
+              </a>
             </div>
+
           </div>
+
         </div>
+
       <% }); %>
+
     <% } else { %>
+
       <p>No organizations found at the moment. Please check back later.</p>
+
     <% } %>
+
   </section>
+
 </main>
 
 <%- include("../partials/footer") %>
