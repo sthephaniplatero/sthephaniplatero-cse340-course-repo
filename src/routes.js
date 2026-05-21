@@ -1,29 +1,68 @@
 import express from 'express';
 
 import { showHomePage } from './controllers/index.js';
-// 1. Importamos tanto la página de la lista como la de detalles
-import { 
-  showOrganizationsPage, 
-  showOrganizationDetailsPage 
+
+// =========================
+// ORGANIZATIONS
+// =========================
+import {
+  showOrganizationsPage,
+  showOrganizationDetailsPage,
+  fetchOrganizations
 } from './controllers/organizations.js';
-import { showProjectsPage } from './controllers/projects.js';
+
+// =========================
+// PROJECTS
+// =========================
+import {
+  showProjectsPage,
+  showProjectDetailsPage, // 👈 IMPORTANTE (FALTABA)
+  fetchProjects,
+  fetchProjectsByOrganization
+} from './controllers/projects.js';
+
+// =========================
+// OTHERS
+// =========================
 import { showCategoriesPage } from './controllers/categories.js';
 import { testErrorPage } from './controllers/errors.js';
 
 const router = express.Router();
 
+// =========================
+// HOME
+// =========================
 router.get('/', showHomePage);
 
-// Ruta para ver TODAS las organizaciones (Asegúrate de que coincida con tu proyecto)
+// =========================
+// ORGANIZATIONS (VIEWS)
+// =========================
 router.get('/organizations', showOrganizationsPage);
-
-// 2. CORRECCIÓN: Cambiado a '/organization/:id' (en singular) para que coincida con los enlaces de la vista
 router.get('/organization/:id', showOrganizationDetailsPage);
 
-router.get('/projects', showProjectsPage);
-router.get('/categories', showCategoriesPage);
+// =========================
+// ORGANIZATIONS (API)
+// =========================
+router.get('/api/organizations', fetchOrganizations);
 
-// test route
+// =========================
+// PROJECTS (VIEWS)
+// =========================
+router.get('/projects', showProjectsPage);
+
+// ⭐ DETALLE DE PROYECTO (LO QUE TE FALTABA)
+router.get('/project/:id', showProjectDetailsPage);
+
+// =========================
+// PROJECTS (API)
+// =========================
+router.get('/api/projects', fetchProjects);
+router.get('/organizations/:id/projects', fetchProjectsByOrganization);
+
+// =========================
+// OTHERS
+// =========================
+router.get('/categories', showCategoriesPage);
 router.get('/test-error', testErrorPage);
 
 export default router;
