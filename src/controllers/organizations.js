@@ -21,11 +21,11 @@ export const showOrganizationsPage = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error al obtener organizaciones:", error);
+    console.error("Error loading organizations:", error.message);
 
     res.status(500).render('pages/404', { 
       title: 'Error', 
-      message: 'Error en el servidor' 
+      message: 'Internal server error while loading organizations'
     });
   }
 };
@@ -36,17 +36,17 @@ export const showOrganizationsPage = async (req, res) => {
 // ===============================
 export const showOrganizationDetailsPage = async (req, res) => {
   try {
-    const organizationId = parseInt(req.params.id);
+    const organizationId = Number(req.params.id);
 
-    // Validación del ID
-    if (isNaN(organizationId)) {
+    // VALIDACIÓN ID
+    if (!Number.isInteger(organizationId)) {
       return res.status(400).render('pages/404', {
-        title: 'Error',
+        title: 'Invalid Request',
         message: 'Invalid organization ID'
       });
     }
 
-    // Obtener datos de organización
+    // ORGANIZACIÓN
     const organizationDetails = await getOrganizationDetails(organizationId);
 
     if (!organizationDetails) {
@@ -56,22 +56,22 @@ export const showOrganizationDetailsPage = async (req, res) => {
       });
     }
 
-    // Obtener proyectos de esa organización
+    // PROYECTOS
     const projects = await getProjectsByOrganizationId(organizationId);
 
-    // Render vista
+    // VIEW
     res.render('pages/organization', {
       title: organizationDetails.name,
       organizationDetails,
-      projects
+      projects: projects || []
     });
 
   } catch (error) {
-    console.error("Error al obtener detalle de organización:", error);
+    console.error("Error loading organization details:", error.message);
 
     res.status(500).render('pages/404', {
-      title: 'Error 500',
-      message: 'Error al cargar organización'
+      title: 'Server Error',
+      message: 'Error loading organization details'
     });
   }
 };
@@ -90,11 +90,11 @@ export const fetchOrganizations = async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Error en controller organizations:', error);
+    console.error('Error fetching organizations:', error.message);
 
     res.status(500).json({
       success: false,
-      message: 'Error al obtener organizaciones'
+      message: 'Error retrieving organizations'
     });
   }
 };

@@ -1,41 +1,78 @@
 <%- include("../partials/header") %>
 
-<main>
+<main class="project-details">
 
+  <!-- HEADER -->
   <section class="page-header">
     <h1><%= project.title %></h1>
-    <p>Service project details</p>
+    <p>Service project overview and detailed information</p>
   </section>
 
-  <section class="projects-grid">
+  <!-- WRAPPER -->
+  <section class="project-wrapper">
 
-    <div class="project-card">
+    <div class="project-card-modern">
 
-      <h2><%= project.title %></h2>
+      <!-- TITLE -->
+      <div class="project-title">
+        <h2><%= project.title %></h2>
+      </div>
 
-      <p><%= project.description %></p>
+      <!-- DESCRIPTION -->
+      <div class="project-section">
+        <h3>Description</h3>
+        <p><%= project.description %></p>
+      </div>
 
-      <p>
-        <strong>Date:</strong>
-        <%= new Date(project.project_date).toLocaleDateString('en-US') %>
-      </p>
+      <!-- INFO GRID -->
+      <div class="project-info-grid">
 
-      <p>
-        <strong>Location:</strong>
-        <%= project.location %>
-      </p>
+        <div class="info-box">
+          <span class="label">📅 Date</span>
+          <span class="value">
+            <%= new Date(project.project_date).toLocaleDateString('en-US') %>
+          </span>
+        </div>
 
-      <p>
-        <strong>Organization:</strong>
-        <a href="/organization/<%= project.organization_id %>">
-          <%= project.organization_name %>
+        <div class="info-box">
+          <span class="label">📍 Location</span>
+          <span class="value"><%= project.location %></span>
+        </div>
+
+        <div class="info-box">
+          <span class="label">🏢 Organization</span>
+          <span class="value">
+            <a href="/organization/<%= project.organization_id %>">
+              <%= project.organization_name %>
+            </a>
+          </span>
+        </div>
+
+      </div>
+
+      <!-- CATEGORIES -->
+      <% if (categories && categories.length > 0) { %>
+        <div class="project-section">
+          <h3>Categories</h3>
+
+          <div class="tags-container">
+
+            <% categories.forEach(category => { %>
+              <a href="/category/<%= category.category_id %>" class="tag">
+                <%= category.category_name %>
+              </a>
+            <% }) %>
+
+          </div>
+        </div>
+      <% } %>
+
+      <!-- ACTIONS -->
+      <div class="project-actions">
+        <a href="/projects" class="btn-secondary">
+          ← Back to Projects
         </a>
-      </p>
-
-      <!-- BOTÓN OPCIONAL DE REGRESO -->
-      <p style="margin-top: 15px;">
-        <a href="/projects">← Back to projects</a>
-      </p>
+      </div>
 
     </div>
 

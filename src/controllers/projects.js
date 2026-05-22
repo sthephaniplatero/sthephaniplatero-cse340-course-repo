@@ -1,41 +1,92 @@
 import {
   getAllProjects,
-  getUpcomingProjects,
   getProjectDetails,
-  getProjectsByOrganizationId
+  getProjectsByOrganizationId,
+  getCategoriesByProjectId
 } from '../models/projects.js';
 
 
 // ===============================
-// CONSTANTE REQUERIDA
+// PAGE: PROJECT LIST
 // ===============================
-const NUMBER_OF_UPCOMING_PROJECTS = 5;
+export const showProjectsPage = async (req, res) => {
+  try {
+    const projects = await getAllProjects();
+
+    res.render("pages/projects", {
+      title: "Projects",
+      projects
+    });
+
+  } catch (error) {
+    console.error("ERROR showProjectsPage:", error);
+    res.status(500).send("Error loading projects");
+  }
+};
 
 
 // ===============================
-// API: TODOS LOS PROYECTOS
+// PAGE: PROJECT DETAILS
+// ===============================
+export const showProjectDetailsPage = async (req, res) => {
+  try {
+    const projectId = parseInt(req.params.id);
+
+    if (!projectId) {
+      return res.status(400).send("Invalid project ID");
+    }
+
+    const project = await getProjectDetails(projectId);
+    const categories = await getCategoriesByProjectId(projectId);
+
+    console.log("PROJECT:", project);
+    console.log("CATEGORIES:", categories);
+
+    if (!project) {
+      return res.status(404).render("pages/404", {
+        title: "Not Found",
+        message: "Project not found"
+      });
+    }
+
+    res.render("pages/project", {
+      title: project.title,
+      project,
+      categories: categories || []
+    });
+
+  } catch (error) {
+    console.error("🔥 ERROR showProjectDetailsPage:", error);
+    res.status(500).send("Error loading project");
+  }
+};
+
+
+// ===============================
+// API: PROJECTS
 // ===============================
 export const fetchProjects = async (req, res) => {
   try {
     const projects = await getAllProjects();
 
-    res.status(200).json({
+    res.json({
       success: true,
       data: projects
     });
+
   } catch (error) {
-    console.error('Error en controller projects:', error);
+    console.error("ERROR fetchProjects:", error);
 
     res.status(500).json({
       success: false,
-      message: 'Error al obtener proyectos'
+      message: "Error loading projects"
     });
   }
 };
 
 
 // ===============================
-// API: PROYECTOS POR ORGANIZACIÓN
+// API: PROJECTS BY ORGANIZATION
 // ===============================
 export const fetchProjectsByOrganization = async (req, res) => {
   try {
@@ -43,68 +94,17 @@ export const fetchProjectsByOrganization = async (req, res) => {
 
     const projects = await getProjectsByOrganizationId(id);
 
-    res.status(200).json({
+    res.json({
       success: true,
-      organization_id: id,
       data: projects
     });
 
   } catch (error) {
-    console.error(error);
+    console.error("ERROR fetchProjectsByOrganization:", error);
 
     res.status(500).json({
       success: false,
-      message: 'Error al obtener proyectos por organización'
+      message: "Error loading projects"
     });
-  }
-};
-
-
-// ===============================
-// PÁGINA: LISTA DE PROYECTOS (REQUIRED)
-// ===============================
-export const showProjectsPage = async (req, res) => {
-  try {
-    const projects = await getUpcomingProjects(NUMBER_OF_UPCOMING_PROJECTS);
-
-    res.render("pages/projects", { 
-      title: "Upcoming Service Projects",
-      projects 
-    });
-
-  } catch (error) {
-    console.error("Error al cargar proyectos:", error.message);
-    res.status(500).send("Error interno del servidor");
-  }
-};
-
-
-// ===============================
-// PÁGINA: DETALLE DE PROYECTO (REQUIRED)
-// ===============================
-export const showProjectDetailsPage = async (req, res) => {
-  try {
-    const projectId = parseInt(req.params.id);
-
-    const project = await getProjectDetails(projectId);
-
-    // 👇 ESTE ES EL LOG QUE NECESITAS
-    console.log("PROJECT FROM DB:", project);
-
-    if (!project) {
-      return res.status(404).render('pages/404', {
-        title: 'Not Found',
-        message: 'Project not found'
-      });
-    }
-
-    res.render("pages/project", {
-      title: project.title,
-      project
-    });
-
-  } catch (error) {
-    console.error(error);
-    res.status(500).send("Error loading project");
   }
 };

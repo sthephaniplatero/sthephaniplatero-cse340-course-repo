@@ -1,0 +1,42 @@
+<%- include("../partials/header") %>
+
+<main>
+
+  <section class="page-header">
+    <h1><%= category.category_name %></h1>
+    <p>Projects under this category</p>
+  </section>
+
+  <section class="projects-grid">
+
+    <% if (projects && projects.length > 0) { %>
+      <% projects.forEach(project => { %>
+
+        <div class="project-card">
+
+          <h3><%= project.title %></h3>
+
+          <p><%= project.description %></p>
+
+          <p><strong>Location:</strong> <%= project.location %></p>
+
+          <p><strong>Date:</strong> <%= project.project_date %></p>
+
+          <a href="/project/<%= project.project_id %>">
+            View Project
+          </a>
+
+        </div>
+
+      <% }) %>
+    <% } else { %>
+
+      <p>No projects found for this category.</p>
+
+    <% } %>
+
+  </section>
+
+</main>
+
+<%- include("../partials/footer") %>

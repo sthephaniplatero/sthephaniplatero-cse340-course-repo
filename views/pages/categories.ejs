@@ -1,6 +1,5 @@
 <%- include("../partials/header") %>
 
-
 <main>
 
   <section class="page-header">
@@ -19,7 +18,9 @@
           <p>Explore all service projects and organizations under the <%= category.category_name %> sector.</p>
           
           <div class="category-footer">
-            <a href="/categories/view/<%= category.category_id %>" class="btn-link">View Projects</a>
+            <a href="/category/<%= category.category_id %>" class="btn-link">
+              View Projects
+            </a>
           </div>
         </div>
 

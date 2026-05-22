@@ -16,23 +16,32 @@ import {
 // =========================
 import {
   showProjectsPage,
-  showProjectDetailsPage, // 👈 IMPORTANTE (FALTABA)
+  showProjectDetailsPage,
   fetchProjects,
   fetchProjectsByOrganization
 } from './controllers/projects.js';
 
 // =========================
+// CATEGORIES
+// =========================
+import {
+  showCategoriesPage,
+  categoryDetails
+} from './controllers/categories.js';
+
+// =========================
 // OTHERS
 // =========================
-import { showCategoriesPage } from './controllers/categories.js';
 import { testErrorPage } from './controllers/errors.js';
 
 const router = express.Router();
+
 
 // =========================
 // HOME
 // =========================
 router.get('/', showHomePage);
+
 
 // =========================
 // ORGANIZATIONS (VIEWS)
@@ -40,18 +49,19 @@ router.get('/', showHomePage);
 router.get('/organizations', showOrganizationsPage);
 router.get('/organization/:id', showOrganizationDetailsPage);
 
+
 // =========================
 // ORGANIZATIONS (API)
 // =========================
 router.get('/api/organizations', fetchOrganizations);
 
+
 // =========================
 // PROJECTS (VIEWS)
 // =========================
 router.get('/projects', showProjectsPage);
-
-// ⭐ DETALLE DE PROYECTO (LO QUE TE FALTABA)
 router.get('/project/:id', showProjectDetailsPage);
+
 
 // =========================
 // PROJECTS (API)
@@ -59,10 +69,18 @@ router.get('/project/:id', showProjectDetailsPage);
 router.get('/api/projects', fetchProjects);
 router.get('/organizations/:id/projects', fetchProjectsByOrganization);
 
+
+// =========================
+// CATEGORIES
+// =========================
+router.get('/categories', showCategoriesPage);
+router.get('/category/:id', categoryDetails);
+
+
 // =========================
 // OTHERS
 // =========================
-router.get('/categories', showCategoriesPage);
 router.get('/test-error', testErrorPage);
+
 
 export default router;
