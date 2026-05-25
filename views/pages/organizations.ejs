@@ -1,63 +1,24 @@
 <%- include('../partials/header') %>
-
 <main>
-
   <section class="page-header">
     <h1><%= title %></h1>
-    <p>Discover organizations making an impact across different sectors.</p>
   </section>
-
   <section class="org-container">
-
     <% if (typeof organizations !== 'undefined' && organizations && organizations.length > 0) { %>
-
       <% organizations.forEach(org => { %>
-
         <div class="org-card">
-
           <% if (org.logo_filename) { %>
-            <img 
-              src="/images/<%= org.logo_filename %>" 
-              alt="<%= org.name %> logo"
-              class="org-logo"
-            >
+            <img src="/images/<%= org.logo_filename %>" alt="<%= org.name %> logo" class="org-logo">
           <% } %>
-
           <div class="org-content">
-
             <h3><%= org.name %></h3>
-
-            <p class="org-category">
-              📧 <%= org.contact_email %>
-            </p>
-
-            <p>
-              <%= org.description %>
-            </p>
-
-            <div class="org-footer">
-              <a 
-                href="/organizations/details/<%= org.organization_id || org.id %>" 
-                class="org-btn"
-              >
-                Learn More
-              </a>
-            </div>
-
+            <p><%= org.description %></p>
+            <a href="/organizations/details/<%= org.organization_id || org.id %>" class="org-btn">Learn More</a>
           </div>
-
         </div>
-
       <% }); %>
-
-    <% } else { %>
-
-      <p>No organizations found at the moment. Please check back later.</p>
-
     <% } %>
-
   </section>
-
+  <p><a href="/organizations/new">Add a new organization</a></p>
 </main>
-
 <%- include('../partials/footer') %>
