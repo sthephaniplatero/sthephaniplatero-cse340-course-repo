@@ -1,5 +1,4 @@
-<%- include("../partials/header") %>
-
+<%- include('../partials/header') %>
 
 <main>
 
@@ -10,21 +9,20 @@
 
   <section class="org-container">
 
-    <% if (organizations && organizations.length > 0) { %>
+    <% if (typeof organizations !== 'undefined' && organizations && organizations.length > 0) { %>
 
       <% organizations.forEach(org => { %>
 
         <div class="org-card">
 
-          <!-- LOGO -->
           <% if (org.logo_filename) { %>
             <img 
               src="/images/<%= org.logo_filename %>" 
               alt="<%= org.name %> logo"
+              class="org-logo"
             >
           <% } %>
 
-          <!-- CONTENT -->
           <div class="org-content">
 
             <h3><%= org.name %></h3>
@@ -39,7 +37,7 @@
 
             <div class="org-footer">
               <a 
-                href="/organizations/details/<%= org.organization_id %>" 
+                href="/organizations/details/<%= org.organization_id || org.id %>" 
                 class="org-btn"
               >
                 Learn More
@@ -62,4 +60,4 @@
 
 </main>
 
-<%- include("../partials/footer") %>
+<%- include('../partials/footer') %>

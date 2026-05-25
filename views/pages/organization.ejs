@@ -1,4 +1,4 @@
-<%- include('partials/header') %>
+<%- include('../partials/header') %>
 
 <main class="organization-details">
 
@@ -29,7 +29,7 @@
         <h3>Service Projects</h3>
 
         <ul>
-            <% if (projects.length > 0) { %>
+            <% if (projects && projects.length > 0) { %>
 
                 <% projects.forEach(project => { %>
                     <li>
@@ -49,4 +49,4 @@
 
 </main>
 
-<%- include('partials/footer') %>
+<%- include('../partials/footer') %>

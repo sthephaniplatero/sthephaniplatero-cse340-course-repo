@@ -47,7 +47,11 @@ router.get('/', showHomePage);
 // ORGANIZATIONS (VIEWS)
 // =========================
 router.get('/organizations', showOrganizationsPage);
+
+// 🛠️ SOLUCIÓN: Declaramos ambos caminos apuntando al mismo controlador.
+// Esto atrapa la petición tanto si el navegador pide /organization/5 como si pide /organizations/details/5
 router.get('/organization/:id', showOrganizationDetailsPage);
+router.get('/organizations/details/:id', showOrganizationDetailsPage);
 
 
 // =========================
