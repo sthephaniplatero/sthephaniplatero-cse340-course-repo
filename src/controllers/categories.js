@@ -1,9 +1,15 @@
-import { getAllCategories } from '../models/categories.js';
+import {
+  getAllCategories,
+  getProjectCategories,
+  updateCategoryAssignments
+} from '../models/categories.js';
 
 import {
   getCategoryById,
-  getProjectsByCategoryId
+  getProjectsByCategoryId,
+  getProjectDetails
 } from '../models/projects.js';
+
 
 // ===============================
 // ALL CATEGORIES PAGE
@@ -18,8 +24,8 @@ const showCategoriesPage = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error al cargar categorías:", error.message);
-    res.status(500).send("Error interno del servidor");
+    console.error("Error loading categories:", error);
+    res.status(500).send("Internal server error");
   }
 };
 
@@ -45,16 +51,72 @@ const categoryDetails = async (req, res) => {
     });
 
   } catch (error) {
-    console.error("Error al cargar detalles de categoría:", error.message);
-    res.status(500).send("Error interno del servidor");
+    console.error("Error loading category details:", error);
+    res.status(500).send("Internal server error");
   }
 };
 
 
 // ===============================
-// EXPORTS
+// SHOW ASSIGN CATEGORIES FORM
+// ===============================
+const showAssignCategoriesForm = async (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+
+    const projectDetails = await getProjectDetails(projectId);
+    const categories = await getAllCategories();
+    const assignedCategories = await getProjectCategories(projectId);
+
+    res.render("pages/assign-categories", {
+      title: "Assign Categories",
+      projectId,
+      projectDetails,
+      categories,
+      assignedCategories
+    });
+
+  } catch (error) {
+    console.error("Error loading assign form:", error);
+    res.status(500).send("Internal server error");
+  }
+};
+
+
+// ===============================
+// PROCESS ASSIGN CATEGORIES FORM
+// ===============================
+const processAssignCategoriesForm = async (req, res) => {
+  try {
+    const projectId = req.params.projectId;
+
+    let categoryIds = req.body.categoryIds || [];
+
+    // asegurar array
+    if (!Array.isArray(categoryIds)) {
+      categoryIds = [categoryIds];
+    }
+
+    await updateCategoryAssignments(projectId, categoryIds);
+
+    req.flash("success", "Categories updated successfully");
+
+    res.redirect(`/project/${projectId}`);
+
+  } catch (error) {
+    console.error("Error updating categories:", error);
+    req.flash("error", "Error updating categories");
+    res.redirect(`/project/${req.params.projectId}`);
+  }
+};
+
+
+// ===============================
+// EXPORTS (ONLY ONCE)
 // ===============================
 export {
   showCategoriesPage,
-  categoryDetails
+  categoryDetails,
+  showAssignCategoriesForm,
+  processAssignCategoriesForm
 };

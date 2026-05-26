@@ -1,68 +1,133 @@
 import express from 'express';
-import { showHomePage } from './controllers/index.js';
 
+import {
+  showHomePage
+} from './controllers/index.js';
+
+
+// =========================
 // ORGANIZATIONS
+// =========================
 import {
   showOrganizationsPage,
   showOrganizationDetailsPage,
   fetchOrganizations,
   showNewOrganizationForm,
   processNewOrganizationForm,
+  showEditOrganizationForm,
+  processEditOrganizationForm,
   organizationValidation
 } from './controllers/organizations.js';
 
+
+// =========================
 // PROJECTS
+// =========================
 import {
   showProjectsPage,
   showProjectDetailsPage,
   fetchProjects,
-  fetchProjectsByOrganization
+  fetchProjectsByOrganization,
+  showNewProjectForm,
+  processNewProjectForm,
+  projectValidation
 } from './controllers/projects.js';
 
+
+// =========================
 // CATEGORIES
+// =========================
 import {
   showCategoriesPage,
-  categoryDetails
+  categoryDetails,
+  showAssignCategoriesForm,
+  processAssignCategoriesForm
 } from './controllers/categories.js';
 
+
+// =========================
 // OTHERS
-import { testErrorPage } from './controllers/errors.js';
+// =========================
+import {
+  testErrorPage
+} from './controllers/errors.js';
 
 const router = express.Router();
+
 
 // =========================
 // HOME
 // =========================
 router.get('/', showHomePage);
 
+
 // =========================
 // ORGANIZATIONS
 // =========================
 router.get('/organizations', showOrganizationsPage);
-router.get('/organization/:id', showOrganizationDetailsPage);
+
 router.get('/organizations/details/:id', showOrganizationDetailsPage);
 
-// API ORGANIZATIONS
+router.get('/organizations/new', showNewOrganizationForm);
+
+router.post(
+  '/organizations/new',
+  organizationValidation,
+  processNewOrganizationForm
+);
+
+router.get('/organizations/edit/:id', showEditOrganizationForm);
+
+router.post(
+  '/organizations/edit/:id',
+  organizationValidation,
+  processEditOrganizationForm
+);
+
 router.get('/api/organizations', fetchOrganizations);
 
-// FORMULARIO NUEVA ORGANIZACIÓN
-// Unificamos la ruta de creación y aplicamos la validación correctamente
-router.get('/organizations/new', showNewOrganizationForm);
-router.post('/organizations/new', organizationValidation, processNewOrganizationForm);
 
 // =========================
 // PROJECTS
 // =========================
 router.get('/projects', showProjectsPage);
+
 router.get('/project/:id', showProjectDetailsPage);
+
+router.get('/projects/new', showNewProjectForm);
+
+router.post(
+  '/projects/new',
+  projectValidation,
+  processNewProjectForm
+);
+
 router.get('/api/projects', fetchProjects);
+
 router.get('/organizations/:id/projects', fetchProjectsByOrganization);
+
+
+// =========================
+// 🔥 ASSIGN CATEGORIES (FALTABA ESTO)
+// =========================
+router.get(
+  '/assign-categories/:projectId',
+  showAssignCategoriesForm
+);
+
+router.post(
+  '/assign-categories/:projectId',
+  processAssignCategoriesForm
+);
+
 
 // =========================
 // CATEGORIES
 // =========================
 router.get('/categories', showCategoriesPage);
+
 router.get('/category/:id', categoryDetails);
+
 
 // =========================
 // OTHERS

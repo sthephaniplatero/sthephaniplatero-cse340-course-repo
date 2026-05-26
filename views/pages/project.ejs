@@ -4,8 +4,15 @@
 
   <!-- HEADER -->
   <section class="page-header">
-    <h1><%= project.title %></h1>
-    <p>Service project overview and detailed information</p>
+
+    <h1>
+      <%= project.title %>
+    </h1>
+
+    <p>
+      Service project overview and detailed information
+    </p>
+
   </section>
 
   <!-- WRAPPER -->
@@ -15,63 +22,127 @@
 
       <!-- TITLE -->
       <div class="project-title">
-        <h2><%= project.title %></h2>
+
+        <h2>
+          <%= project.title %>
+        </h2>
+
       </div>
 
       <!-- DESCRIPTION -->
       <div class="project-section">
+
         <h3>Description</h3>
-        <p><%= project.description %></p>
+
+        <p>
+          <%= project.description %>
+        </p>
+
       </div>
 
       <!-- INFO GRID -->
       <div class="project-info-grid">
 
+        <!-- DATE -->
         <div class="info-box">
-          <span class="label">📅 Date</span>
-          <span class="value">
-            <%= new Date(project.project_date).toLocaleDateString('en-US') %>
+
+          <span class="label">
+            📅 Date
           </span>
-        </div>
 
-        <div class="info-box">
-          <span class="label">📍 Location</span>
-          <span class="value"><%= project.location %></span>
-        </div>
-
-        <div class="info-box">
-          <span class="label">🏢 Organization</span>
           <span class="value">
-            <a href="/organization/<%= project.organization_id %>">
+
+            <%= new Date(
+              project.project_date
+            ).toLocaleDateString('en-US') %>
+
+          </span>
+
+        </div>
+
+        <!-- LOCATION -->
+        <div class="info-box">
+
+          <span class="label">
+            📍 Location
+          </span>
+
+          <span class="value">
+            <%= project.location %>
+          </span>
+
+        </div>
+
+        <!-- ORGANIZATION -->
+        <div class="info-box">
+
+          <span class="label">
+            🏢 Organization
+          </span>
+
+          <span class="value">
+
+            <a href="/organizations/details/<%= project.organization_id %>">
+
               <%= project.organization_name %>
+
             </a>
+
           </span>
+
         </div>
 
       </div>
 
       <!-- CATEGORIES -->
-      <% if (categories && categories.length > 0) { %>
+      <% if (
+        categories &&
+        categories.length > 0
+      ) { %>
+
         <div class="project-section">
+
           <h3>Categories</h3>
 
           <div class="tags-container">
 
             <% categories.forEach(category => { %>
-              <a href="/category/<%= category.category_id %>" class="tag">
+
+              <a
+                href="/category/<%= category.category_id %>"
+                class="tag"
+              >
+
                 <%= category.category_name %>
+
               </a>
+
             <% }) %>
 
+            <div class="project-actions">
+
+              <a href="/assign-categories/<%= project.project_id %>">
+                Edit Categories
+              </a>
+            
+            </div>
+
           </div>
+
         </div>
+
       <% } %>
 
       <!-- ACTIONS -->
       <div class="project-actions">
-        <a href="/projects" class="btn-secondary">
+
+        <a
+          href="/projects"
+          class="btn-secondary"
+        >
           ← Back to Projects
         </a>
+
       </div>
 
     </div>
