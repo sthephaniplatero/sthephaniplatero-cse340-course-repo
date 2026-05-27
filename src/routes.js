@@ -30,6 +30,11 @@ import {
   fetchProjectsByOrganization,
   showNewProjectForm,
   processNewProjectForm,
+
+  // 🔥 NEW
+  showEditProjectForm,
+  processEditProjectForm,
+
   projectValidation
 } from './controllers/projects.js';
 
@@ -102,13 +107,25 @@ router.post(
   processNewProjectForm
 );
 
+// 🔥 EDIT PROJECT
+router.get(
+  '/projects/edit/:id',
+  showEditProjectForm
+);
+
+router.post(
+  '/projects/edit/:id',
+  projectValidation,
+  processEditProjectForm
+);
+
 router.get('/api/projects', fetchProjects);
 
 router.get('/organizations/:id/projects', fetchProjectsByOrganization);
 
 
 // =========================
-// 🔥 ASSIGN CATEGORIES (FALTABA ESTO)
+// 🔥 ASSIGN CATEGORIES
 // =========================
 router.get(
   '/assign-categories/:projectId',

@@ -256,3 +256,69 @@ export const createProject = async (
 
   return result.rows[0].project_id;
 };
+
+// ===============================
+// 9. GET PROJECT BY ID
+// ===============================
+export const getProjectById =
+  async (projectId) => {
+
+    const query = `
+      SELECT
+        project_id,
+        title,
+        description,
+        location,
+        project_date,
+        organization_id
+      FROM public.service_projects
+      WHERE project_id = $1;
+    `;
+
+    const result = await db.query(
+      query,
+      [projectId]
+    );
+
+    return result.rows[0] || null;
+  };
+
+
+// ===============================
+// 10. UPDATE PROJECT
+// ===============================
+export const updateProjectById =
+  async (
+    projectId,
+    title,
+    description,
+    location,
+    projectDate,
+    organizationId
+  ) => {
+
+    const query = `
+      UPDATE public.service_projects
+      SET
+        title = $1,
+        description = $2,
+        location = $3,
+        project_date = $4,
+        organization_id = $5
+      WHERE project_id = $6;
+    `;
+
+    const queryParams = [
+      title,
+      description,
+      location,
+      projectDate,
+      organizationId,
+      projectId
+    ];
+
+    await db.query(
+      query,
+      queryParams
+    );
+  };

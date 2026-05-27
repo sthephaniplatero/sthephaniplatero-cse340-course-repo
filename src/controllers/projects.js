@@ -3,7 +3,12 @@ import {
   getProjectDetails,
   getProjectsByOrganizationId,
   getCategoriesByProjectId,
-  createProject
+  createProject,
+
+  // 🔥 EDIT PROJECT
+  getProjectById,
+  updateProjectById
+
 } from '../models/projects.js';
 
 import {
@@ -278,7 +283,6 @@ export const showNewProjectForm =
 export const processNewProjectForm =
   async (req, res) => {
 
-    // VALIDATION ERRORS
     const errors =
       validationResult(req);
 
@@ -341,6 +345,143 @@ export const processNewProjectForm =
 
       res.redirect(
         '/projects/new'
+      );
+    }
+  };
+
+
+// ===============================
+// EDIT PROJECT FORM
+// ===============================
+export const showEditProjectForm =
+  async (req, res) => {
+
+    try {
+
+      const projectId =
+        parseInt(req.params.id);
+
+      if (!projectId) {
+
+        return res.status(400).send(
+          'Invalid project ID'
+        );
+      }
+
+      const project =
+        await getProjectById(
+          projectId
+        );
+
+      if (!project) {
+
+        return res.status(404).render(
+          'pages/404',
+          {
+            title: 'Not Found',
+            message:
+              'Project not found'
+          }
+        );
+      }
+
+      const organizations =
+        await getAllOrganizations();
+
+      res.render(
+        'pages/edit-project',
+        {
+          title: 'Edit Project',
+          project,
+          organizations
+        }
+      );
+
+    } catch (error) {
+
+      console.error(
+        'ERROR showEditProjectForm:',
+        error
+      );
+
+      res.status(500).send(
+        'Error loading edit form'
+      );
+    }
+  };
+
+
+// ===============================
+// PROCESS EDIT PROJECT
+// ===============================
+export const processEditProjectForm =
+  async (req, res) => {
+
+    const errors =
+      validationResult(req);
+
+    const projectId =
+      parseInt(req.params.id);
+
+    if (!errors.isEmpty()) {
+
+      errors.array().forEach(
+        (error) => {
+
+          req.flash(
+            'error',
+            error.msg
+          );
+        }
+      );
+
+      return res.redirect(
+        `/projects/edit/${projectId}`
+      );
+    }
+
+    const {
+      title,
+      description,
+      location,
+      date,
+      organizationId
+    } = req.body;
+
+    try {
+
+      await updateProjectById(
+        projectId,
+        title,
+        description,
+        location,
+        date,
+        organizationId
+      );
+
+      req.flash(
+        'success',
+        'Project updated successfully!'
+      );
+
+      res.redirect(
+        `/project/${projectId}`
+      );
+
+    } catch (error) {
+
+      console.error(
+        'ERROR processEditProjectForm:',
+        error
+      );
+
+      req.flash(
+        'error',
+        'Error updating project'
+      );
+
+      res.redirect(
+        `/projects/edit/${projectId}`
       );
     }
   };
