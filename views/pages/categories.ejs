@@ -1,40 +1,42 @@
 <%- include('../partials/header') %>
 
-<main>
-
+<main class="container">
     <section class="page-header">
         <h1>Categories</h1>
-        <p>List of all available categories</p>
+        <p>Manage your project categories below.</p>
+        <a href="/new-category" class="btn btn-primary">Add New Category</a>
     </section>
 
     <section class="categories-container">
-
         <% if (categories && categories.length > 0) { %>
-
-            <ul class="categories-list">
-
-                <% categories.forEach(category => { %>
-
-                    <li class="category-item">
-
-                        <a href="/category/<%= category.category_id %>">
-                            <%= category.category_name %>
-                        </a>
-
-                    </li>
-
-                <% }); %>
-
-            </ul>
-
+            <table class="table-professional">
+                <thead>
+                    <tr>
+                        <th>Category Name</th>
+                        <th class="text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% categories.forEach(category => { %>
+                        <tr>
+                            <td>
+                                <a href="/category/<%= category.category_id %>" class="category-link">
+                                    <%= category.category_name %>
+                                </a>
+                            </td>
+                            <td class="text-right">
+                                <a href="/edit-category/<%= category.category_id %>" class="btn btn-sm btn-outline">Edit</a>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
         <% } else { %>
-
-            <p>No categories found.</p>
-
+            <div class="empty-state">
+                <p>No categories found. Start by adding one!</p>
+            </div>
         <% } %>
-
     </section>
-
 </main>
 
 <%- include('../partials/footer') %>

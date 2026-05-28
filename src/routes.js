@@ -46,7 +46,11 @@ import {
   showCategoriesPage,
   categoryDetails,
   showAssignCategoriesForm,
-  processAssignCategoriesForm
+  processAssignCategoriesForm,
+  showCreateCategoryForm,
+  processCreateCategory,
+  showEditCategoryForm,
+  processEditCategory
 } from './controllers/categories.js';
 
 
@@ -150,5 +154,14 @@ router.get('/category/:id', categoryDetails);
 // OTHERS
 // =========================
 router.get('/test-error', testErrorPage);
+
+
+router.get('/new-category', showCreateCategoryForm);
+
+router.post('/new-category', processCreateCategory);
+
+router.get('/edit-category/:id', showEditCategoryForm);
+
+router.post('/edit-category/:id', processEditCategory);
 
 export default router;

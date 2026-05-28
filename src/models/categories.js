@@ -60,3 +60,27 @@ export const updateCategoryAssignments = async (projectId, categoryIds) => {
     await assignCategoryToProject(projectId, categoryId);
   }
 };
+
+// ===============================
+// GET CATEGORY BY ID (Para la edición)
+// ===============================
+export const getCategoryById = async (categoryId) => {
+  const query = `
+    SELECT * FROM categories
+    WHERE category_id = $1;
+  `;
+  const result = await db.query(query, [categoryId]);
+  return result.rows[0];
+};
+
+// Añadir a models/categories.js
+export const createCategory = async (categoryName) => {
+  const query = `INSERT INTO categories (category_name) VALUES ($1) RETURNING category_id;`;
+  const result = await db.query(query, [categoryName]);
+  return result.rows[0];
+};
+
+export const updateCategory = async (categoryId, categoryName) => {
+  const query = `UPDATE categories SET category_name = $1 WHERE category_id = $2;`;
+  await db.query(query, [categoryName, categoryId]);
+};
