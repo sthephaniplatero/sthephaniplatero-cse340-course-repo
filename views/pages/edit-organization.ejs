@@ -5,24 +5,24 @@
   <h1><%= title %></h1>
 
   <form
-    action="/projects/edit/<%= project.project_id %>"
+    action="/organizations/edit/<%= organization.organization_id %>"
     method="POST"
   >
 
-    <!-- TITLE -->
+    <!-- NAME -->
     <div class="form-group">
 
-      <label for="title">
-        Project Title
+      <label for="name">
+        Organization Name
       </label>
 
       <input
         type="text"
-        id="title"
-        name="title"
-        maxlength="200"
+        id="name"
+        name="name"
+        maxlength="150"
         required
-        value="<%= project.title %>"
+        value="<%= organization.name %>"
       />
 
     </div>
@@ -38,88 +38,34 @@
       <textarea
         id="description"
         name="description"
-        maxlength="1000"
+        maxlength="500"
         required
-      ><%= project.description %></textarea>
+      ><%= organization.description %></textarea>
 
     </div>
 
 
-    <!-- LOCATION -->
+    <!-- CONTACT EMAIL -->
     <div class="form-group">
 
-      <label for="location">
-        Location
+      <label for="contactEmail">
+        Contact Email
       </label>
 
       <input
-        type="text"
-        id="location"
-        name="location"
-        maxlength="200"
+        type="email"
+        id="contactEmail"
+        name="contactEmail"
         required
-        value="<%= project.location %>"
+        value="<%= organization.contact_email %>"
       />
-
-    </div>
-
-
-    <!-- DATE -->
-    <div class="form-group">
-
-      <label for="date">
-        Project Date
-      </label>
-
-      <input
-        type="date"
-        id="date"
-        name="date"
-        required
-        value="<%= new Date(project.project_date).toISOString().split('T')[0] %>"
-      />
-
-    </div>
-
-
-    <!-- ORGANIZATION -->
-    <div class="form-group">
-
-      <label for="organizationId">
-        Organization
-      </label>
-
-      <select
-        id="organizationId"
-        name="organizationId"
-        required
-      >
-
-        <% organizations.forEach(organization => { %>
-
-          <option
-            value="<%= organization.organization_id %>"
-
-            <%= organization.organization_id === project.organization_id
-              ? 'selected'
-              : ''
-            %>
-          >
-
-            <%= organization.name %>
-
-          </option>
-
-        <% }) %>
-
-      </select>
 
     </div>
 
 
     <!-- SUBMIT BUTTON -->
     <button type="submit">
-      Update Project
+      Update Organization
     </button>
 
   </form>

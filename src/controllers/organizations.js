@@ -359,12 +359,9 @@ export const showEditOrganizationForm =
     try {
 
       const organizationId =
-        parseOrganizationId(
-          req.params.id
-        );
+        parseOrganizationId(req.params.id);
 
       if (!organizationId) {
-
         return renderErrorPage(
           res,
           400,
@@ -373,13 +370,10 @@ export const showEditOrganizationForm =
         );
       }
 
-      const organizationDetails =
-        await getOrganizationDetails(
-          organizationId
-        );
+      const organization =
+        await getOrganizationDetails(organizationId);
 
-      if (!organizationDetails) {
-
+      if (!organization) {
         return renderErrorPage(
           res,
           404,
@@ -388,14 +382,15 @@ export const showEditOrganizationForm =
         );
       }
 
-      res.render(
-        'pages/edit-organization',
-        {
-          title:
-            'Edit Organization',
-          organizationDetails
-        }
-      );
+      res.render('pages/edit-organization', {
+        title: 'Edit Organization',
+
+        // 🔥 ESTE ES EL FIX IMPORTANTE
+        organization,
+
+        // opcional si lo usas en otros selects
+        organizations: []
+      });
 
     } catch (error) {
 
@@ -412,8 +407,6 @@ export const showEditOrganizationForm =
       );
     }
   };
-
-
 // ===============================
 // PROCESS EDIT ORGANIZATION
 // ===============================
