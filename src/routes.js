@@ -4,6 +4,11 @@ import {
   showHomePage
 } from './controllers/index.js';
 
+import {
+  showUserRegistrationForm,
+  processUserRegistrationForm
+} from './controllers/users.js';
+
 
 // =========================
 // ORGANIZATIONS
@@ -163,5 +168,9 @@ router.post('/new-category', processCreateCategory);
 router.get('/edit-category/:id', showEditCategoryForm);
 
 router.post('/edit-category/:id', processEditCategory);
+
+// User registration routes
+router.get('/register', showUserRegistrationForm);
+router.post('/register', processUserRegistrationForm);
 
 export default router;

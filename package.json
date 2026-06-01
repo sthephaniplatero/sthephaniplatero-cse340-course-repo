@@ -10,6 +10,7 @@
   "type": "module",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.96.0",
+    "bcrypt": "^6.0.0",
     "dotenv": "^17.4.2",
     "ejs": "^5.0.2",
     "express": "^5.2.1",
