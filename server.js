@@ -4,8 +4,8 @@ dotenv.config();
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
-import session from 'express-session';
-import flash from './src/middleware/flash.js';
+import session from "express-session";
+import flash from "./src/middleware/flash.js";
 
 // Router
 import router from "./src/routes.js";
@@ -26,6 +26,7 @@ const __dirname = path.dirname(__filename);
    CONFIGURACIÓN EXPRESS
 ========================= */
 app.use(express.static(path.join(__dirname, "public")));
+
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 
@@ -41,32 +42,39 @@ app.use((req, res, next) => {
   next();
 });
 
-// Variables globales para vistas
-app.use((req, res, next) => {
-  res.locals.NODE_ENV = NODE_ENV;
-  next();
-});
-
-// 1. ANALIZADORES DE CUERPO (Para req.body)
+// Body parsers
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// 2. SESIÓN (Necesaria para Flash)
+// Session
 const SESSION_SECRET = process.env.SESSION_SECRET;
-app.use(session({
+
+app.use(
+  session({
     secret: SESSION_SECRET,
     resave: false,
     saveUninitialized: true,
-    cookie: { maxAge: 60 * 60 * 1000 } 
-}));
+    cookie: {
+      maxAge: 60 * 60 * 1000, // 1 hora
+    },
+  })
+);
 
-// 3. FLASH MESSAGES (Requiere la sesión inicializada)
+// Flash messages
 app.use(flash);
+
+// Variables globales para vistas
+app.use((req, res, next) => {
+  res.locals.isLoggedIn = !!req.session?.user;
+  res.locals.currentUser = req.session?.user || null;
+  res.locals.NODE_ENV = NODE_ENV;
+
+  next();
+});
 
 /* =========================
    RUTAS
 ========================= */
-// Las rutas van al final para que ya tengan acceso a todo lo anterior
 app.use(router);
 
 /* =========================
@@ -75,9 +83,15 @@ app.use(router);
 app.get("/db-test", async (req, res) => {
   try {
     const result = await db.query("SELECT NOW()");
-    res.send({ success: true, database_time: result.rows[0] });
+    res.send({
+      success: true,
+      database_time: result.rows[0],
+    });
   } catch (error) {
-    res.status(500).send({ success: false, error: error.message });
+    res.status(500).send({
+      success: false,
+      error: error.message,
+    });
   }
 });
 
@@ -87,9 +101,13 @@ app.get("/db-test", async (req, res) => {
 app.listen(PORT, async () => {
   try {
     await testConnection();
+
     console.log(`✅ Servidor corriendo en: http://127.0.0.1:${PORT}`);
     console.log(`🚀 Entorno: ${NODE_ENV}`);
   } catch (error) {
-    console.error("❌ No se pudo conectar a la base de datos:", error.message);
+    console.error(
+      "❌ No se pudo conectar a la base de datos:",
+      error.message
+    );
   }
 });

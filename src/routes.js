@@ -58,6 +58,17 @@ import {
   processEditCategory
 } from './controllers/categories.js';
 
+// =========================
+// USERS
+// =========================
+import {
+  showLoginForm,
+  processLoginForm,
+  processLogout,
+  showDashboard,
+  requireLogin
+} from './controllers/users.js';
+
 
 // =========================
 // OTHERS
@@ -73,6 +84,9 @@ const router = express.Router();
 // HOME
 // =========================
 router.get('/', showHomePage);
+
+// Protected dashboard route
+router.get('/dashboard', requireLogin, showDashboard);
 
 
 // =========================
@@ -153,6 +167,12 @@ router.post(
 router.get('/categories', showCategoriesPage);
 
 router.get('/category/:id', categoryDetails);
+
+
+// User login routes
+router.get('/login', showLoginForm);
+router.post('/login', processLoginForm);
+router.get('/logout', processLogout);
 
 
 // =========================
