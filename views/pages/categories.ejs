@@ -1,12 +1,12 @@
 <%- include('../partials/header') %>
 
 <main class="categories-page">
+  <% 
+    // Aseguramos que isAdmin siempre tenga un valor booleano, incluso si no hay usuario logueado
+    const isAdmin = (user && user.role_name === 'admin'); 
+  %>
 
-  <% const isAdmin = user && user.role_name === 'admin'; %>
-
-  <!-- HEADER -->
   <header class="page-header">
-
     <div>
       <h1>Categories</h1>
       <p>Manage your project categories below.</p>
@@ -17,72 +17,42 @@
         + Add Category
       </a>
     <% } %>
-
   </header>
 
-
-  <!-- TABLE -->
   <section class="table-container">
-
     <% if (categories && categories.length > 0) { %>
-
       <table class="table-professional">
-
         <thead>
           <tr>
             <th>Category Name</th>
             <th class="text-right">Actions</th>
           </tr>
         </thead>
-
         <tbody>
-
           <% categories.forEach(category => { %>
-
             <tr>
-
-              <!-- NAME -->
               <td>
-                <a
-                  href="/category/<%= category.category_id %>"
-                  class="category-link"
-                >
+                <a href="/category/<%= category.category_id %>" class="category-link">
                   <%= category.category_name %>
                 </a>
               </td>
-
-              <!-- ACTIONS -->
               <td class="text-right">
-
                 <% if (isAdmin) { %>
-                  <a
-                    href="/edit-category/<%= category.category_id %>"
-                    class="btn warning"
-                  >
+                  <a href="/edit-category/<%= category.category_id %>" class="btn warning">
                     Edit
                   </a>
                 <% } %>
-
               </td>
-
             </tr>
-
           <% }); %>
-
         </tbody>
-
       </table>
-
     <% } else { %>
-
       <div class="empty-state">
-        <p>No categories found. Start by adding one!</p>
+        <p>No categories found. <%= isAdmin ? 'Start by adding one!' : '' %></p>
       </div>
-
     <% } %>
-
   </section>
-
 </main>
 
 <%- include('../partials/footer') %>

@@ -659,3 +659,43 @@ footer {
   text-align: center;
   opacity: 0.6;
 }
+
+
+/* Contenedor principal */
+.dashboard-container {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 0 20px;
+}
+
+/* Tarjeta de contenido */
+.content-card {
+    background: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+/* Estilo de tabla más ordenado */
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.table th, .table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+/* Estilo para el rol */
+.role-badge {
+    background: #e7f3ff;
+    color: #007bff;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+}

@@ -65,7 +65,8 @@ import {
   processLogout,
   showDashboard,
   requireLogin,
-  requireRole
+  requireRole,
+  showUsersPage
 } from './controllers/users.js';
 
 
@@ -203,6 +204,16 @@ router.post(
   '/assign-categories/:projectId',
   requireRole('admin'),
   processAssignCategoriesForm
+);
+
+// =========================
+// USERS MANAGEMENT (PROTECTED)
+// =========================
+router.get(
+  '/users', 
+  requireLogin, 
+  requireRole('admin'), 
+  showUsersPage
 );
 
 

@@ -1,12 +1,50 @@
-<%- include('../partials/header') %>
+<%- include("../partials/header") %>
 
-<main>
-    <h1><%= title %></h1>
+<main class="dashboard-container">
+    <section class="page-header">
+        <h1>Dashboard</h1>
+        <p>Welcome back, <strong><%= name %></strong>!</p>
+    </section>
 
-    <h2>Dashboard</h2>
-    <p>Name: <%= name %></p>
-    <p>Username: <%= email %></p>
+    <hr>
 
+    <% if (user && user.role_name === 'admin') { %>
+        <section class="admin-panel" style="margin-bottom: 2rem;">
+            <h3>Admin Tools</h3>
+            <p>Access management tools for system users.</p>
+            <a href="/users" class="btn primary">Manage Registered Users</a>
+        </section>
+    <% } %>
+
+    <section class="content-card">
+        <h3>Registered Users</h3>
+        <p>View the full list of system users below.</p>
+        
+        <div class="table-container">
+            <% if (locals.users && users.length > 0) { %>
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% users.forEach(userItem => { %>
+                    <tr>
+                      <td><%= userItem.name %></td>
+                      <td><%= userItem.email %></td>
+                      <td><span class="role-badge"><%= userItem.role_name %></span></td>
+                    </tr>
+                  <% }) %>
+                </tbody>
+              </table>
+            <% } else { %>
+              <p class="empty-msg">No users found.</p>
+            <% } %>
+        </div>
+    </section>
 </main>
 
-<%- include('../partials/footer') %>
+<%- include("../partials/footer") %>
