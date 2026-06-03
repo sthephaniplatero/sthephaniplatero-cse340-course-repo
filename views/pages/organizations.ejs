@@ -1,93 +1,83 @@
 <%- include('../partials/header') %>
 
-<main>
+<main class="org-page">
 
-  <section class="page-header">
-
+  <!-- HEADER -->
+  <header class="page-header">
     <h1><%= title %></h1>
 
-  </section>
+    <% const isAdmin = user && user.role_name === 'admin'; %>
 
-  <section class="org-container">
+    <% if (isAdmin) { %>
+      <div class="page-actions">
+        <a href="/new-organization" class="btn primary">
+          + Add Organization
+        </a>
+      </div>
+    <% } %>
+  </header>
 
-    <% if (
-      typeof organizations !== 'undefined' &&
-      organizations &&
-      organizations.length > 0
-    ) { %>
+
+  <!-- CONTENT -->
+  <section class="org-grid">
+
+    <% if (organizations && organizations.length > 0) { %>
 
       <% organizations.forEach(org => { %>
 
-        <div class="org-card">
+        <article class="org-card">
 
-          <% if (org.logo_filename) { %>
+          <!-- LOGO -->
+          <div class="org-logo">
+            <% if (org.logo_filename) { %>
+              <img
+                src="/images/<%= org.logo_filename %>"
+                alt="<%= org.name %>"
+              >
+            <% } %>
+          </div>
 
-            <img
-              src="/images/<%= org.logo_filename %>"
-              alt="<%= org.name %> logo"
-              class="org-logo"
-            >
+          <!-- INFO -->
+          <div class="org-info">
 
-          <% } %>
+            <h3><%= org.name %></h3>
 
-          <div class="org-content">
+            <p><%= org.description %></p>
 
-            <h3>
-              <%= org.name %>
-            </h3>
-
-            <p>
-              <%= org.description %>
-            </p>
-
+            <!-- ACTIONS -->
             <div class="org-actions">
 
-              <!-- DETAILS BUTTON -->
               <a
                 href="/organizations/details/<%= org.organization_id || org.id %>"
-                class="org-btn"
+                class="btn secondary"
               >
-                Learn More
+                View
               </a>
 
-              <!-- EDIT BUTTON -->
-              <a
-                href="/organizations/edit/<%= org.organization_id || org.id %>"
-                class="org-btn edit-btn"
-              >
-                Edit Organization
-              </a>
+              <% if (isAdmin) { %>
+                <a
+                  href="/organizations/edit/<%= org.organization_id || org.id %>"
+                  class="btn warning"
+                >
+                  Edit
+                </a>
+              <% } %>
 
             </div>
 
           </div>
 
-        </div>
+        </article>
 
       <% }); %>
 
     <% } else { %>
 
-      <p>
-        No organizations available.
-      </p>
+      <div class="empty-state">
+        <p>No organizations available</p>
+      </div>
 
     <% } %>
-
-  </section>
-
-  <section class="add-org-section">
-
-    <p>
-
-      <a
-        href="/organizations/new"
-        class="org-btn"
-      >
-        Add a New Organization
-      </a>
-
-    </p>
 
   </section>
 

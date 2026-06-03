@@ -65,13 +65,16 @@ app.use(flash);
 
 // Variables globales para vistas
 app.use((req, res, next) => {
-  res.locals.isLoggedIn = !!req.session?.user;
-  res.locals.currentUser = req.session?.user || null;
-  res.locals.NODE_ENV = NODE_ENV;
+    res.locals.isLoggedIn = false;
+    if (req.session && req.session.user) {
+        res.locals.isLoggedIn = true;
+    }
 
-  next();
+    res.locals.user = req.session.user || null;
+
+    res.locals.NODE_ENV = NODE_ENV;
+    next();
 });
-
 /* =========================
    RUTAS
 ========================= */

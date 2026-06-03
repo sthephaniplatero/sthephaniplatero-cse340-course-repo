@@ -1,127 +1,90 @@
 <%- include("../partials/header") %>
 
-<main>
+<main class="projects-page">
 
-  <!-- PAGE HEADER -->
-  <section class="page-header">
+  <!-- HEADER -->
+  <header class="page-header">
 
-    <h1>
-      <%= title %>
-    </h1>
+    <div>
+      <h1><%= title %></h1>
+      <p>Explore upcoming service projects.</p>
+    </div>
 
-    <p>
-      Explore upcoming service projects.
-    </p>
+    <% const isAdmin = user && user.role_name === 'admin'; %>
 
-  </section>
-
-
-  <!-- ADD PROJECT BUTTON -->
-  <section class="add-org-section">
-
-    <p>
-
-      <a
-        href="/projects/new"
-        class="org-btn"
-      >
-        Add a New Project
+    <% if (isAdmin) { %>
+      <a href="/new-project" class="btn primary">
+        + Add Project
       </a>
+    <% } %>
 
-    </p>
-
-  </section>
+  </header>
 
 
-  <!-- PROJECTS GRID -->
+  <!-- GRID -->
   <section class="projects-grid">
 
-    <% if (
-      projects &&
-      projects.length > 0
-    ) { %>
+    <% if (projects && projects.length > 0) { %>
 
       <% projects.forEach(project => { %>
 
-        <div class="project-card">
+        <article class="project-card">
 
-          <!-- PROJECT TITLE -->
-          <h3>
-
+          <!-- TITLE -->
+          <h3 class="project-title">
             <a href="/project/<%= project.project_id %>">
-
               <%= project.title %>
-
             </a>
-
           </h3>
 
           <!-- DESCRIPTION -->
-          <p>
+          <p class="project-desc">
             <%= project.description %>
           </p>
 
-          <!-- LOCATION -->
-          <p>
+          <!-- INFO -->
+          <div class="project-meta">
 
-            <small>
+            <p>📍 <%= project.location %></p>
 
-              📍 <%= project.location %>
+            <p>
+              <strong>Organization:</strong>
+              <a href="/organizations/details/<%= project.organization_id %>">
+                <%= project.organization_name %>
+              </a>
+            </p>
 
-            </small>
-
-          </p>
-
-          <!-- ORGANIZATION -->
-          <p>
-
-            <strong>
-              Organization:
-            </strong>
-
-            <a href="/organizations/details/<%= project.organization_id %>">
-
-              <%= project.organization_name %>
-
-            </a>
-
-          </p>
-
-          <!-- DATE -->
-          <p>
-
-            <strong>
-              Date:
-            </strong>
-
-            <%= new Date(
-              project.project_date
-            ).toLocaleDateString('en-US') %>
-
-          </p>
-
-
-          <!-- ACTION BUTTONS -->
-          <div class="project-actions">
-
-            <a
-              href="/projects/edit/<%= project.project_id %>"
-              class="edit-btn"
-            >
-              Edit
-            </a>
+            <p>
+              <strong>Date:</strong>
+              <%= new Date(project.project_date).toLocaleDateString('en-US') %>
+            </p>
 
           </div>
 
-        </div>
+
+          <!-- ACTIONS -->
+          <div class="project-actions">
+
+            <% if (isAdmin) { %>
+              <a
+                href="/projects/edit/<%= project.project_id %>"
+                class="btn warning"
+              >
+                Edit
+              </a>
+            <% } %>
+
+          </div>
+
+        </article>
 
       <% }); %>
 
     <% } else { %>
 
-      <p>
-        No upcoming projects found.
-      </p>
+      <div class="empty-state">
+        <p>No upcoming projects found.</p>
+      </div>
 
     <% } %>
 

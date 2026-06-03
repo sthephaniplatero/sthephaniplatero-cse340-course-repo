@@ -35,11 +35,8 @@ import {
   fetchProjectsByOrganization,
   showNewProjectForm,
   processNewProjectForm,
-
-  // 🔥 NEW
   showEditProjectForm,
   processEditProjectForm,
-
   projectValidation
 } from './controllers/projects.js';
 
@@ -58,6 +55,7 @@ import {
   processEditCategory
 } from './controllers/categories.js';
 
+
 // =========================
 // USERS
 // =========================
@@ -66,7 +64,8 @@ import {
   processLoginForm,
   processLogout,
   showDashboard,
-  requireLogin
+  requireLogin,
+  requireRole
 } from './controllers/users.js';
 
 
@@ -90,24 +89,30 @@ router.get('/dashboard', requireLogin, showDashboard);
 
 
 // =========================
-// ORGANIZATIONS
+// ORGANIZATIONS (PROTECTED)
 // =========================
 router.get('/organizations', showOrganizationsPage);
 
 router.get('/organizations/details/:id', showOrganizationDetailsPage);
 
-router.get('/organizations/new', showNewOrganizationForm);
+router.get('/organizations/new', requireRole('admin'), showNewOrganizationForm);
 
 router.post(
   '/organizations/new',
+  requireRole('admin'),
   organizationValidation,
   processNewOrganizationForm
 );
 
-router.get('/organizations/edit/:id', showEditOrganizationForm);
+router.get(
+  '/organizations/edit/:id',
+  requireRole('admin'),
+  showEditOrganizationForm
+);
 
 router.post(
   '/organizations/edit/:id',
+  requireRole('admin'),
   organizationValidation,
   processEditOrganizationForm
 );
@@ -116,28 +121,34 @@ router.get('/api/organizations', fetchOrganizations);
 
 
 // =========================
-// PROJECTS
+// PROJECTS (PROTECTED)
 // =========================
 router.get('/projects', showProjectsPage);
 
 router.get('/project/:id', showProjectDetailsPage);
 
-router.get('/projects/new', showNewProjectForm);
+router.get(
+  '/projects/new',
+  requireRole('admin'),
+  showNewProjectForm
+);
 
 router.post(
   '/projects/new',
+  requireRole('admin'),
   projectValidation,
   processNewProjectForm
 );
 
-// 🔥 EDIT PROJECT
 router.get(
   '/projects/edit/:id',
+  requireRole('admin'),
   showEditProjectForm
 );
 
 router.post(
   '/projects/edit/:id',
+  requireRole('admin'),
   projectValidation,
   processEditProjectForm
 );
@@ -148,48 +159,70 @@ router.get('/organizations/:id/projects', fetchProjectsByOrganization);
 
 
 // =========================
-// 🔥 ASSIGN CATEGORIES
-// =========================
-router.get(
-  '/assign-categories/:projectId',
-  showAssignCategoriesForm
-);
-
-router.post(
-  '/assign-categories/:projectId',
-  processAssignCategoriesForm
-);
-
-
-// =========================
-// CATEGORIES
+// CATEGORIES (PROTECTED)
 // =========================
 router.get('/categories', showCategoriesPage);
 
 router.get('/category/:id', categoryDetails);
 
+router.get(
+  '/new-category',
+  requireRole('admin'),
+  showCreateCategoryForm
+);
 
-// User login routes
+router.post(
+  '/new-category',
+  requireRole('admin'),
+  processCreateCategory
+);
+
+router.get(
+  '/edit-category/:id',
+  requireRole('admin'),
+  showEditCategoryForm
+);
+
+router.post(
+  '/edit-category/:id',
+  requireRole('admin'),
+  processEditCategory
+);
+
+
+// =========================
+// ASSIGN CATEGORIES (PROTECTED)
+// =========================
+router.get(
+  '/assign-categories/:projectId',
+  requireRole('admin'),
+  showAssignCategoriesForm
+);
+
+router.post(
+  '/assign-categories/:projectId',
+  requireRole('admin'),
+  processAssignCategoriesForm
+);
+
+
+// =========================
+// AUTH ROUTES
+// =========================
 router.get('/login', showLoginForm);
 router.post('/login', processLoginForm);
 router.get('/logout', processLogout);
 
 
 // =========================
-// OTHERS
+// OTHER ROUTES
 // =========================
 router.get('/test-error', testErrorPage);
 
 
-router.get('/new-category', showCreateCategoryForm);
-
-router.post('/new-category', processCreateCategory);
-
-router.get('/edit-category/:id', showEditCategoryForm);
-
-router.post('/edit-category/:id', processEditCategory);
-
-// User registration routes
+// =========================
+// REGISTER
+// =========================
 router.get('/register', showUserRegistrationForm);
 router.post('/register', processUserRegistrationForm);
 
