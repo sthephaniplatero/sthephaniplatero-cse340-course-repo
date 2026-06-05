@@ -111,3 +111,23 @@ CREATE TABLE volunteers (
     UNIQUE(user_id, project_id) -- Asegura que un usuario no se inscriba dos veces al mismo proyecto
 );
 
+
+CREATE TABLE public.project_volunteers (
+    id SERIAL PRIMARY KEY,
+    user_id INTEGER NOT NULL,
+    project_id INTEGER NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT fk_user
+        FOREIGN KEY (user_id)
+        REFERENCES public.users(user_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT fk_project
+        FOREIGN KEY (project_id)
+        REFERENCES public.service_projects(project_id)
+        ON DELETE CASCADE,
+
+    CONSTRAINT unique_volunteer UNIQUE (user_id, project_id)
+);
+
