@@ -1,50 +1,105 @@
 <%- include("../partials/header") %>
 
 <main class="dashboard-container">
+
+    <!-- ========================= -->
+    <!-- HEADER -->
+    <!-- ========================= -->
     <section class="page-header">
         <h1>Dashboard</h1>
-        <p>Welcome back, <strong><%= name %></strong>!</p>
+        <p>Welcome back, <strong><%= user?.name %></strong>!</p>
     </section>
 
     <hr>
 
+    <!-- ========================= -->
+    <!-- ADMIN PANEL -->
+    <!-- ========================= -->
     <% if (user && user.role_name === 'admin') { %>
         <section class="admin-panel" style="margin-bottom: 2rem;">
             <h3>Admin Tools</h3>
-            <p>Access management tools for system users.</p>
+            <p>Access system management tools for users.</p>
             <a href="/users" class="btn primary">Manage Registered Users</a>
         </section>
     <% } %>
 
+    <!-- ========================= -->
+    <!-- USERS TABLE -->
+    <!-- ========================= -->
     <section class="content-card">
         <h3>Registered Users</h3>
         <p>View the full list of system users below.</p>
-        
+
         <div class="table-container">
-            <% if (locals.users && users.length > 0) { %>
-              <table class="table">
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Email</th>
-                    <th>Role</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% users.forEach(userItem => { %>
-                    <tr>
-                      <td><%= userItem.name %></td>
-                      <td><%= userItem.email %></td>
-                      <td><span class="role-badge"><%= userItem.role_name %></span></td>
-                    </tr>
-                  <% }) %>
-                </tbody>
-              </table>
+            <% if (users && users.length > 0) { %>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% users.forEach(userItem => { %>
+                            <tr>
+                                <td><%= userItem.name %></td>
+                                <td><%= userItem.email %></td>
+                                <td>
+                                    <span class="role-badge">
+                                        <%= userItem.role_name %>
+                                    </span>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
             <% } else { %>
-              <p class="empty-msg">No users found.</p>
+                <p class="empty-msg">No users found.</p>
             <% } %>
         </div>
     </section>
+
+    <!-- ========================= -->
+    <!-- VOLUNTEER PROJECTS -->
+    <!-- ========================= -->
+    <hr>
+
+    <section class="content-card">
+        <h3>My Volunteer Projects</h3>
+        <p>These are the projects you are currently participating in.</p>
+
+        <% if (volunteeredProjects && volunteeredProjects.length > 0) { %>
+
+            <ul class="project-list">
+                <% volunteeredProjects.forEach(project => { %>
+                    <li class="project-item">
+
+                        <div>
+                            <strong><%= project.title %></strong>
+                            <p><%= project.location %></p>
+                            <small><%= new Date(project.project_date).toLocaleDateString('en-US') %></small>
+                        </div>
+
+                        <form method="POST" action="/projects/<%= project.project_id %>/unvolunteer">
+                            <button type="submit" class="btn danger">
+                                Leave
+                            </button>
+                        </form>
+
+                    </li>
+                <% }) %>
+            </ul>
+
+        <% } else { %>
+
+            <p class="empty-msg">
+                You are not participating in any projects yet.
+            </p>
+
+        <% } %>
+    </section>
+
 </main>
 
 <%- include("../partials/footer") %>

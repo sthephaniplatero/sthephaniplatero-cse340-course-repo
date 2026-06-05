@@ -322,3 +322,54 @@ export const updateProjectById =
       queryParams
     );
   };
+
+// ===============================
+// VOLUNTEERS
+// ===============================
+
+// ➕ Agregar voluntario
+export const addVolunteer = async (userId, projectId) => {
+  const query = `
+    INSERT INTO public.project_volunteers (user_id, project_id)
+    VALUES ($1, $2)
+    ON CONFLICT (user_id, project_id) DO NOTHING;
+  `;
+
+  await db.query(query, [userId, projectId]);
+};
+
+
+// ❌ Eliminar voluntario
+export const removeVolunteer = async (userId, projectId) => {
+  const query = `
+    DELETE FROM public.project_volunteers
+    WHERE user_id = $1 AND project_id = $2;
+  `;
+
+  await db.query(query, [userId, projectId]);
+};
+
+
+// 📋 Obtener proyectos donde el usuario es voluntario
+export const getUserVolunteeredProjects = async (userId) => {
+  const query = `
+    SELECT 
+      p.project_id,
+      p.title,
+      p.description,
+      p.location,
+      p.project_date,
+      o.name AS organization_name
+    FROM public.service_projects p
+    INNER JOIN public.project_volunteers pv 
+      ON pv.project_id = p.project_id
+    INNER JOIN public.organizations o
+      ON p.organization_id = o.organization_id
+    WHERE pv.user_id = $1
+    ORDER BY p.project_date DESC;
+  `;
+
+  const result = await db.query(query, [userId]);
+
+  return result.rows;
+};

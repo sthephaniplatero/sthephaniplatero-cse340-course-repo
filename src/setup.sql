@@ -102,3 +102,12 @@ CREATE TABLE users (
     role_id INTEGER REFERENCES roles(role_id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Junction Table for Volunteers (Users <-> Service Projects)
+CREATE TABLE volunteers (
+    volunteer_id SERIAL PRIMARY KEY,
+    user_id INTEGER REFERENCES users(user_id) ON DELETE CASCADE,
+    project_id INTEGER REFERENCES service_projects(project_id) ON DELETE CASCADE,
+    UNIQUE(user_id, project_id) -- Asegura que un usuario no se inscriba dos veces al mismo proyecto
+);
+

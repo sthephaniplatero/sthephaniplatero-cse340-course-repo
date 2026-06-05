@@ -4,10 +4,10 @@ import {
   getProjectsByOrganizationId,
   getCategoriesByProjectId,
   createProject,
-
-  // 🔥 EDIT PROJECT
   getProjectById,
-  updateProjectById
+  updateProjectById,
+  getUserVolunteeredProjects,
+
 
 } from '../models/projects.js';
 
@@ -19,6 +19,8 @@ import {
   body,
   validationResult
 } from 'express-validator';
+
+
 
 
 // ===============================
@@ -123,57 +125,59 @@ export const showProjectDetailsPage =
         parseInt(req.params.id);
 
       if (!projectId) {
-
-        return res.status(400).send(
-          'Invalid project ID'
-        );
+        return res.status(400).send('Invalid project ID');
       }
 
+      // =========================
+      // PROJECT DATA
+      // =========================
       const project =
-        await getProjectDetails(
-          projectId
-        );
+        await getProjectDetails(projectId);
 
       const categories =
-        await getCategoriesByProjectId(
-          projectId
-        );
+        await getCategoriesByProjectId(projectId);
 
       if (!project) {
-
-        return res.status(404).render(
-          'pages/404',
-          {
-            title: 'Not Found',
-            message:
-              'Project not found'
-          }
-        );
+        return res.status(404).render('pages/404', {
+          title: 'Not Found',
+          message: 'Project not found'
+        });
       }
 
-      res.render(
-        'pages/project',
-        {
-          title: project.title,
-          project,
-          categories:
-            categories || []
-        }
-      );
+      // =========================
+      // VOLUNTEER LOGIC
+      // =========================
+      let isVolunteer = false;
+
+if (req.session.user) {
+
+  const userId = req.session.user.id;
+
+  const userProjects =
+    await getUserVolunteeredProjects(userId);
+
+  isVolunteer = userProjects.some(
+    (p) => p.project_id === projectId
+  );
+}
+      // =========================
+      // RENDER VIEW
+      // =========================
+      res.render('pages/project', {
+        title: project.title,
+        project,
+        categories: categories || [],
+        user: req.session.user || null,
+        isVolunteer
+      });
 
     } catch (error) {
 
-      console.error(
-        'ERROR showProjectDetailsPage:',
-        error
-      );
+      console.error('ERROR showProjectDetailsPage:', error);
 
-      res.status(500).send(
-        'Error loading project'
-      );
+      res.status(500).send('Error loading project');
     }
   };
-
 
 // ===============================
 // API: PROJECTS
@@ -485,3 +489,5 @@ export const processEditProjectForm =
       );
     }
   };
+
+  
