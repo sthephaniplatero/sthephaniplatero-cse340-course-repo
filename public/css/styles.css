@@ -699,3 +699,297 @@ footer {
     font-size: 0.85em;
     font-weight: bold;
 }
+
+/* ==========================================
+   DRAG AND DROP VOLUNTEER MANAGEMENT STYLES 🚀
+   ========================================== */
+
+.section-desc {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+}
+
+.drag-badge {
+    display: inline-block;
+    background: var(--border);
+    color: var(--text);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: bold;
+    font-size: 0.85em;
+}
+
+/* Drag Handles and Draggable Row State */
+.draggable-user-row {
+    transition: background-color 0.2s ease, border-left-color 0.2s ease;
+    border-left: 3px solid transparent;
+}
+
+.draggable-user-row:hover {
+    background-color: #f1f5f9;
+    border-left-color: var(--secondary);
+}
+
+.draggable-user-row.dragging {
+    opacity: 0.4;
+    background-color: #e2e8f0;
+    border-left-color: var(--accent);
+}
+
+.drag-handle {
+    cursor: grab;
+    font-size: 1.25rem;
+    color: #94a3b8;
+    text-align: center;
+    user-select: none;
+    transition: color 0.2s;
+}
+
+.drag-handle:hover {
+    color: var(--secondary);
+}
+
+.drag-handle:active {
+    cursor: grabbing;
+}
+
+/* Project Cards Grid */
+.project-management-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.project-management-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.25rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    position: relative;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* Drop-target visual cue */
+.project-management-card.drag-active {
+    border: 2px dashed var(--secondary);
+    background-color: #faf5ff;
+}
+
+.project-management-card.drag-over {
+    border: 2px solid var(--accent);
+    background-color: #ecfeff;
+    transform: translateY(-4px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+.pm-card-header {
+    margin-bottom: 0.75rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.5rem;
+}
+
+.pm-card-header h4 {
+    margin: 0;
+    color: var(--primary);
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.pm-card-org {
+    font-size: 0.8rem;
+    color: var(--secondary);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.pm-card-info {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 1rem;
+}
+
+.volunteers-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+}
+
+/* Volunteer list inside card */
+.pm-volunteer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.pm-volunteer-item {
+    background: #f8fafc;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 0.9rem;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.pm-volunteer-item:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+}
+
+.pm-volunteer-item.dragging {
+    opacity: 0.5;
+    border: 1px dashed var(--accent);
+}
+
+.drag-handle-sub {
+    cursor: grab;
+    color: #94a3b8;
+    margin-right: 6px;
+    font-size: 0.9rem;
+}
+
+.pm-volunteer-name {
+    font-weight: 500;
+    color: var(--text);
+    flex-grow: 1;
+}
+
+.btn-remove-volunteer {
+    background: none;
+    border: none;
+    color: #ef4444;
+    font-size: 1.25rem;
+    font-weight: bold;
+    cursor: pointer;
+    line-height: 1;
+    padding: 2px 6px;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.btn-remove-volunteer:hover {
+    background: #fee2e2;
+    transform: scale(1.1);
+}
+
+.pm-volunteer-empty {
+    font-style: italic;
+    color: var(--muted);
+    text-align: center;
+    padding: 1rem;
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    font-size: 0.85rem;
+}
+
+/* Project list tags on user rows */
+.user-projects-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem;
+}
+
+.project-tag-badge {
+    display: inline-block;
+    background-color: #eef2ff;
+    color: var(--secondary);
+    border: 1px solid #c7d2fe;
+    border-radius: 4px;
+    padding: 2px 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+
+.project-tag-badge:hover {
+    background-color: var(--secondary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.text-italic {
+    font-style: italic;
+}
+
+/* Drop area indicators overlay */
+.drop-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(99, 102, 241, 0.9);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+    font-weight: bold;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.project-management-card.drag-over .drop-indicator {
+    opacity: 1;
+}
+
+/* Trash Drop Zone Styles */
+.trash-drop-zone {
+    margin-top: 2rem;
+    border: 2px dashed #f87171;
+    background-color: #fef2f2;
+    color: #dc2626;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    transition: all 0.2s ease;
+    opacity: 0.3;
+    pointer-events: none; /* Only allow drops when active */
+}
+
+.trash-drop-zone.drag-active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.trash-drop-zone.drag-over {
+    background-color: #fee2e2;
+    border-color: #ef4444;
+    transform: scale(1.02);
+}
+
+.trash-icon {
+    font-size: 1.5rem;
+}
+
+.remove-symbol {
+    color: #ef4444;
+    font-weight: bold;
+    background: #fee2e2;
+    padding: 1px 6px;
+    border-radius: 4px;
+}

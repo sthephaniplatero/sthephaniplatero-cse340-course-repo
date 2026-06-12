@@ -184,6 +184,56 @@ router.post('/projects/:id/unvolunteer', requireLogin, async (req, res) => {
 });
 
 
+// ➕ ASIGNAR CUALQUIER VOLUNTARIO (Drag and Drop / Admin)
+router.post('/volunteers/add', requireLogin, async (req, res) => {
+  try {
+    const { userId, projectId } = req.body;
+    if (!userId || !projectId) {
+      return res.status(400).json({ success: false, error: 'User ID and Project ID are required.' });
+    }
+    await projectModel.addVolunteer(userId, projectId);
+
+    if (req.xhr || (req.headers.accept && req.headers.accept.indexOf('json') > -1)) {
+      return res.json({ success: true, message: 'Voluntario asignado con éxito.' });
+    }
+    req.flash('success', 'Voluntario asignado con éxito.');
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error(error);
+    if (req.xhr || (req.headers.accept && req.headers.accept.indexOf('json') > -1)) {
+      return res.status(500).json({ success: false, error: 'Error al asignar voluntario.' });
+    }
+    req.flash('error', 'Error al asignar voluntario.');
+    res.redirect('/dashboard');
+  }
+});
+
+
+// ❌ ELIMINAR CUALQUIER VOLUNTARIO (Drag and Drop / Admin / Dashboard)
+router.post('/volunteers/remove', requireLogin, async (req, res) => {
+  try {
+    const { userId, projectId } = req.body;
+    if (!userId || !projectId) {
+      return res.status(400).json({ success: false, error: 'User ID and Project ID are required.' });
+    }
+    await projectModel.removeVolunteer(userId, projectId);
+
+    if (req.xhr || (req.headers.accept && req.headers.accept.indexOf('json') > -1)) {
+      return res.json({ success: true, message: 'Voluntario removido con éxito.' });
+    }
+    req.flash('success', 'Voluntario removido con éxito.');
+    res.redirect('/dashboard');
+  } catch (error) {
+    console.error(error);
+    if (req.xhr || (req.headers.accept && req.headers.accept.indexOf('json') > -1)) {
+      return res.status(500).json({ success: false, error: 'Error al remover voluntario.' });
+    }
+    req.flash('error', 'Error al remover voluntario.');
+    res.redirect('/dashboard');
+  }
+});
+
+
 // =========================
 // ERROR TEST
 // =========================

@@ -65,9 +65,22 @@ const authenticateUser = async (email, password) => {
 
 const getAllUsersFromDB = async () => {
     const query = `
-        SELECT u.user_id, u.name, u.email, r.role_name 
+        SELECT u.user_id, u.name, u.email, r.role_name,
+               COALESCE(
+                 json_agg(
+                   json_build_object(
+                     'project_id', p.project_id,
+                     'title', p.title
+                   )
+                 ) FILTER (WHERE p.project_id IS NOT NULL),
+                 '[]'
+               ) AS volunteered_projects
         FROM users u
         JOIN roles r ON u.role_id = r.role_id
+        LEFT JOIN public.project_volunteers pv ON u.user_id = pv.user_id
+        LEFT JOIN public.service_projects p ON pv.project_id = p.project_id
+        GROUP BY u.user_id, u.name, u.email, r.role_name
+        ORDER BY u.name ASC;
     `;
     const result = await db.query(query);
     return result.rows;

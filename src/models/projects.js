@@ -373,3 +373,34 @@ export const getUserVolunteeredProjects = async (userId) => {
 
   return result.rows;
 };
+
+// 📋 Obtener todos los proyectos con su lista de voluntarios (agregados por JSON)
+export const getProjectsWithVolunteers = async () => {
+  const query = `
+    SELECT 
+      p.project_id,
+      p.title,
+      p.description,
+      p.location,
+      p.project_date,
+      o.name AS organization_name,
+      COALESCE(
+        json_agg(
+          json_build_object(
+            'user_id', u.user_id,
+            'name', u.name,
+            'email', u.email
+          )
+        ) FILTER (WHERE u.user_id IS NOT NULL),
+        '[]'
+      ) AS volunteers
+    FROM public.service_projects p
+    INNER JOIN public.organizations o ON p.organization_id = o.organization_id
+    LEFT JOIN public.project_volunteers pv ON p.project_id = pv.project_id
+    LEFT JOIN public.users u ON pv.user_id = u.user_id
+    GROUP BY p.project_id, o.name
+    ORDER BY p.project_date DESC;
+  `;
+  const result = await db.query(query);
+  return result.rows;
+};

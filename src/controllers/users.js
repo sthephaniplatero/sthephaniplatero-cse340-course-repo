@@ -6,7 +6,8 @@ import {
 } from '../models/users.js';
 
 import { 
-    getUserVolunteeredProjects 
+    getUserVolunteeredProjects,
+    getProjectsWithVolunteers
 } from '../models/projects.js';
 
 
@@ -104,13 +105,17 @@ const showDashboard = async (req, res) => {
                 await getUserVolunteeredProjects(user.id);
         }
 
+        // Fetch all projects with their volunteers for management
+        const projectsWithVolunteers = await getProjectsWithVolunteers();
+
         res.render('../views/pages/dashboard', {
             title: 'Dashboard',
             name: user.name,
             email: user.email,
             user,
             users,
-            volunteeredProjects
+            volunteeredProjects,
+            projectsWithVolunteers
         });
 
     } catch (error) {
@@ -122,7 +127,8 @@ const showDashboard = async (req, res) => {
             email: req.session.user?.email,
             user: req.session.user,
             users: [],
-            volunteeredProjects: []
+            volunteeredProjects: [],
+            projectsWithVolunteers: []
         });
     }
 };

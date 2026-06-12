@@ -28,27 +28,43 @@
     <!-- ========================= -->
     <section class="content-card">
         <h3>Registered Users</h3>
-        <p>View the full list of system users below.</p>
+        <p class="section-desc">View the full list of system users. Drag any user using the handle <span class="drag-badge">⋮⋮</span> to assign them as a volunteer to a project below.</p>
 
         <div class="table-container">
             <% if (users && users.length > 0) { %>
                 <table class="table">
                     <thead>
                         <tr>
+                            <th style="width: 50px; text-align: center;">Drag</th>
                             <th>Name</th>
                             <th>Email</th>
                             <th>Role</th>
+                            <th>Volunteered Projects</th>
                         </tr>
                     </thead>
                     <tbody>
                         <% users.forEach(userItem => { %>
-                            <tr>
-                                <td><%= userItem.name %></td>
+                            <tr draggable="true" class="draggable-user-row" data-user-id="<%= userItem.user_id %>" data-user-name="<%= userItem.name %>">
+                                <td class="drag-handle">⋮⋮</td>
+                                <td><strong><%= userItem.name %></strong></td>
                                 <td><%= userItem.email %></td>
                                 <td>
                                     <span class="role-badge">
                                         <%= userItem.role_name %>
                                     </span>
+                                </td>
+                                <td>
+                                    <div class="user-projects-list">
+                                        <% if (userItem.volunteered_projects && userItem.volunteered_projects.length > 0) { %>
+                                            <% userItem.volunteered_projects.forEach(project => { %>
+                                                <a href="/project/<%= project.project_id %>" class="project-tag-badge">
+                                                    <%= project.title %>
+                                                </a>
+                                            <% }) %>
+                                        <% } else { %>
+                                            <span class="text-muted text-italic">None</span>
+                                        <% } %>
+                                    </div>
                                 </td>
                             </tr>
                         <% }) %>
@@ -61,13 +77,64 @@
     </section>
 
     <!-- ========================= -->
-    <!-- VOLUNTEER PROJECTS -->
+    <!-- VOLUNTEER MANAGER (DRAG & DROP) -->
+    <!-- ========================= -->
+    <hr>
+    
+    <section class="content-card">
+        <h3>Project Volunteers Manager</h3>
+        <p class="section-desc">Drag users from the table above and drop them on a card below to assign them. To remove a volunteer, click the <span class="remove-symbol">×</span> or drag their card to the remove zone.</p>
+        
+        <div class="project-management-grid">
+            <% if (projectsWithVolunteers && projectsWithVolunteers.length > 0) { %>
+                <% projectsWithVolunteers.forEach(project => { %>
+                    <div class="project-management-card" data-project-id="<%= project.project_id %>">
+                        <div class="pm-card-header">
+                            <h4><%= project.title %></h4>
+                            <span class="pm-card-org"><%= project.organization_name %></span>
+                        </div>
+                        <div class="pm-card-body">
+                            <p class="pm-card-info">
+                                📍 <%= project.location %> | 📅 <%= new Date(project.project_date).toLocaleDateString('en-US') %>
+                            </p>
+                            
+                            <h5 class="volunteers-title">Assigned Volunteers (<%= project.volunteers.length %>)</h5>
+                            <ul class="pm-volunteer-list">
+                                <% if (project.volunteers && project.volunteers.length > 0) { %>
+                                    <% project.volunteers.forEach(volunteer => { %>
+                                        <li class="pm-volunteer-item" draggable="true" data-user-id="<%= volunteer.user_id %>" data-project-id="<%= project.project_id %>">
+                                            <span class="drag-handle-sub">⋮⋮</span>
+                                            <span class="pm-volunteer-name"><%= volunteer.name %></span>
+                                            <button type="button" class="btn-remove-volunteer" data-user-id="<%= volunteer.user_id %>" data-project-id="<%= project.project_id %>" title="Remove Volunteer">×</button>
+                                        </li>
+                                    <% }) %>
+                                <% } else { %>
+                                    <li class="pm-volunteer-empty">Drop user here</li>
+                                <% } %>
+                            </ul>
+                        </div>
+                        <div class="drop-indicator">Drop Here to Assign</div>
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <p class="empty-msg">No projects found.</p>
+            <% } %>
+        </div>
+
+        <!-- Trash zone for drag-to-remove -->
+        <div class="trash-drop-zone" id="trash-drop-zone">
+            <span class="trash-icon">🗑️</span> Drag volunteer here to remove assignment
+        </div>
+    </section>
+
+    <!-- ========================= -->
+    <!-- MY PERSONAL VOLUNTEER PROJECTS -->
     <!-- ========================= -->
     <hr>
 
     <section class="content-card">
         <h3>My Volunteer Projects</h3>
-        <p>These are the projects you are currently participating in.</p>
+        <p class="section-desc">These are the projects you are currently participating in.</p>
 
         <% if (volunteeredProjects && volunteeredProjects.length > 0) { %>
 
@@ -101,5 +168,159 @@
     </section>
 
 </main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    let draggedUserId = null;
+    let draggedSourceProjectId = null;
+
+    // Draggable users from table
+    const userRows = document.querySelectorAll('.draggable-user-row');
+    userRows.forEach(row => {
+        row.addEventListener('dragstart', (e) => {
+            draggedUserId = row.getAttribute('data-user-id');
+            draggedSourceProjectId = null; // Came from users list
+            row.classList.add('dragging');
+            document.querySelectorAll('.project-management-card').forEach(card => {
+                card.classList.add('drag-active');
+            });
+        });
+        
+        row.addEventListener('dragend', () => {
+            row.classList.remove('dragging');
+            document.querySelectorAll('.project-management-card').forEach(card => {
+                card.classList.remove('drag-active');
+                card.classList.remove('drag-over');
+            });
+        });
+    });
+
+    // Draggable volunteers in projects (for dragging to trash/remove)
+    const volunteerItems = document.querySelectorAll('.pm-volunteer-item');
+    volunteerItems.forEach(item => {
+        item.addEventListener('dragstart', (e) => {
+            draggedUserId = item.getAttribute('data-user-id');
+            draggedSourceProjectId = item.getAttribute('data-project-id');
+            item.classList.add('dragging');
+            const trash = document.getElementById('trash-drop-zone');
+            if (trash) trash.classList.add('drag-active');
+        });
+        
+        item.addEventListener('dragend', () => {
+            item.classList.remove('dragging');
+            const trash = document.getElementById('trash-drop-zone');
+            if (trash) {
+                trash.classList.remove('drag-active');
+                trash.classList.remove('drag-over');
+            }
+        });
+    });
+
+    // Project Drop Zones
+    const projectCards = document.querySelectorAll('.project-management-card');
+    projectCards.forEach(card => {
+        card.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (draggedUserId && !draggedSourceProjectId) { // Only allow dropping users here
+                card.classList.add('drag-over');
+            }
+        });
+
+        card.addEventListener('dragleave', () => {
+            card.classList.remove('drag-over');
+        });
+
+        card.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            card.classList.remove('drag-over');
+            
+            if (draggedUserId && !draggedSourceProjectId) {
+                const projectId = card.getAttribute('data-project-id');
+                await assignVolunteer(draggedUserId, projectId);
+            }
+        });
+    });
+
+    // Trash Drop Zone for removing
+    const trashZone = document.getElementById('trash-drop-zone');
+    if (trashZone) {
+        trashZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            if (draggedUserId && draggedSourceProjectId) { // Only allow dropping assigned volunteers here
+                trashZone.classList.add('drag-over');
+            }
+        });
+
+        trashZone.addEventListener('dragleave', () => {
+            trashZone.classList.remove('drag-over');
+        });
+
+        trashZone.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            trashZone.classList.remove('drag-over');
+            
+            if (draggedUserId && draggedSourceProjectId) {
+                await removeVolunteer(draggedUserId, draggedSourceProjectId);
+            }
+        });
+    }
+
+    // Click buttons to remove
+    const removeBtns = document.querySelectorAll('.btn-remove-volunteer');
+    removeBtns.forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const userId = btn.getAttribute('data-user-id');
+            const projectId = btn.getAttribute('data-project-id');
+            if (confirm('Are you sure you want to remove this volunteer from the project?')) {
+                await removeVolunteer(userId, projectId);
+            }
+        });
+    });
+
+    async function assignVolunteer(userId, projectId) {
+        try {
+            const response = await fetch('/volunteers/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ userId, projectId })
+            });
+            const data = await response.json();
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.error || 'Failed to assign volunteer');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error connecting to the server');
+        }
+    }
+
+    async function removeVolunteer(userId, projectId) {
+        try {
+            const response = await fetch('/volunteers/remove', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({ userId, projectId })
+            });
+            const data = await response.json();
+            if (data.success) {
+                window.location.reload();
+            } else {
+                alert(data.error || 'Failed to remove volunteer');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Error connecting to the server');
+        }
+    }
+});
+</script>
 
 <%- include("../partials/footer") %>
