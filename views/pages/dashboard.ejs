@@ -26,6 +26,7 @@
     <!-- ========================= -->
     <!-- USERS TABLE -->
     <!-- ========================= -->
+    <% if (user && user.role_name === 'admin') { %>
     <section class="content-card">
         <h3>Registered Users</h3>
         <p class="section-desc">View the full list of system users. Drag any user using the handle <span class="drag-badge">⋮⋮</span> to assign them as a volunteer to a project below.</p>
@@ -126,6 +127,7 @@
             <span class="trash-icon">🗑️</span> Drag volunteer here to remove assignment
         </div>
     </section>
+    <% } %>
 
     <!-- ========================= -->
     <!-- MY PERSONAL VOLUNTEER PROJECTS -->
